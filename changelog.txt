@@ -1,0 +1,8 @@
+===============================================
+-------       COMP20050 PROJECT 2       -------
+===============================================
+
+			******CHANGELOG******
+-	Initial Commit (Sabeer)
+		+ Created Changelog and Cluedo Folder
+	
