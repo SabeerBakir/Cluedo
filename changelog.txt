@@ -5,4 +5,7 @@
 			******CHANGELOG******
 -	Initial Commit (Sabeer)
 		+ Created Changelog and Cluedo Folder
+		
+-	Created Interfaces
+		+ Laying out the basic functionality for each component
 	
