@@ -8,6 +8,7 @@ import javax.swing.border.Border;
 import javax.swing.border.TitledBorder;
 
 
+@SuppressWarnings("serial")
 public class UI extends JFrame{
 	
 	// Custom JPanel
@@ -28,6 +29,8 @@ public class UI extends JFrame{
 				System.out.print("Image Exception: " + exImage1.getMessage());
 			}
 			
+			this.setLayout(null);
+			
 		}
 		
 		@Override
@@ -35,22 +38,31 @@ public class UI extends JFrame{
 			
 			super.paintComponent(g);
 			Graphics2D g2 = (Graphics2D) g;
-			g2.drawImage(imageBuffer, 0, 0, this.getHeight(), this.getHeight(), this);
+			g2.drawImage(imageBuffer, 0, 0, 640, 638, this);
 			
 		}
 		
 	}
 	
+	public UI(Player[] players){
+		for(int i = 0; i < players.length; i++){
+			gridPanel.add(players[i]);
+		}
+	}
+	
+	
 	// Important UI JComponents
 	JFrame mainFrame = new JFrame("FinnaBustaJava");
-	InnerPanel boardPanel = new InnerPanel("cluedoboard.jpg");
+	//InnerPanel boardPanel = new InnerPanel("cluedoboard.jpg");
+	InnerPanel boardPanel = new InnerPanel("cluedo board with grid.png");
+	JPanel	gridPanel	= new JPanel();
 	JPanel textPanel = new JPanel();
 	JTextArea textInfoField = new JTextArea(1,20);
 	String DEFAULTCOMD = "> ";
 	JTextField textComdField = new JTextField(DEFAULTCOMD);
 	
 	// Configure all the JComponents
-	private void getMainFrame() {
+	public void getMainFrame() {
 		
 		// Make the main frame
 		mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -99,17 +111,25 @@ public class UI extends JFrame{
 		// Add the panels to main frame
 		mainFrame.add(boardPanel, BorderLayout.CENTER);	
 		mainFrame.add(textPanel, BorderLayout.EAST);
-		mainFrame.setSize(895, 700);
+		mainFrame.setSize(880, 680);
 		mainFrame.setResizable(false);
 		
-	}	
-	
-	// for testing purposes only
-	public static void main(String[] args) {
-	
-		UI test = new UI();
-		test.getMainFrame();
+		// Grid Panel stuff
+		gridPanel.setLocation(42, 24);
+		gridPanel.setSize(551, 573);
+		//gridPanel.setLayout(new GridLayout(25, 24, 2, 1));
+		gridPanel.setLayout(null);
+		boardPanel.add(gridPanel);
+		gridPanel.setOpaque(false);
 		
 	}
+	
+	// for testing purposes only
+//	public static void main(String[] args) {
+//	
+//		UI test = new UI();
+//		test.getMainFrame();
+//		
+//	}
 
 }

@@ -1,8 +1,8 @@
 
 public interface PlayerInterface {
 	
-	public void accuse(String killerName, String killerWeapon, String killerRoom);
-	public void ask(Player[] players);
+	public String accuse(String killerName, String killerWeapon, String killerRoom);
+	public String ask(Player[] players);
 	
 	public void moveUp();
 	public void moveDown();	
