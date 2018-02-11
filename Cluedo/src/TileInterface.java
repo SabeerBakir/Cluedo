@@ -9,12 +9,12 @@ public interface TileInterface {
 	public boolean isEmpty();
 	
 	public int getType();
-	public int getPosX();
-	public int getPosY();
+	public int getCol();
+	public int getRow();
 	
 	public void setType(int type);
-	public void setPosX(int x);
-	public void setPosY(int y);
+	public void setCol(int col);
+	public void setRow(int row);
 
 	
 	

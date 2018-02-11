@@ -29,14 +29,14 @@ public class Tile implements TileInterface {
 		{2, 2, 2, 2, 2, 2, 2, 0, 2, 2, 2, 2, 2, 2, 2, 2, 0, 2, 2, 2, 2, 2, 2, 2}, 
 	};
 	public static Tile[][] board = new Tile[25][24];
-	private int posX;
-	private int posY;
+	private int row;
+	private int col;
 	private int type;
 	private boolean occupied;
 	
-	public Tile(int posX, int posY, int type) {
-		this.posX = posX;
-		this.posY = posY;
+	public Tile(int row, int col, int type) {
+		this.row = row;
+		this.col = col;
 		this.type = type;
 		
 		if(type == 2) // if the tile is a wall or out of the bounds of the map, prevent movement onto it.
@@ -52,24 +52,24 @@ public class Tile implements TileInterface {
 			occupied = !occupied;
 	}
 	
-	public void setPosX(int posX) {
-		this.posX = posX;
+	public void setRow(int row) {
+		this.row = row;
 	}
 
-	public void setPosY(int posY) {
-		this.posY = posY;
+	public void setCol(int col) {
+		this.col = col;
 	}
 	
 	public void setType(int type) {
 		this.type = type;
 	}
 	
-	public int getPosX() {
-		return posX;
+	public int getRow() {
+		return row;
 	}
 	
-	public int getPosY() {
-		return posY;
+	public int getCol() {
+		return col;
 	}
 	
 	public int getType() {
@@ -81,19 +81,19 @@ public class Tile implements TileInterface {
 	}
 	
 	public Tile getUpTile() {
-		return board[getPosX()][getPosY() + 1];
+		return board[getRow() - 1][getCol()];
 	}
 	
 	public Tile getDownTile() {
-		return board[getPosX()][getPosY() - 1];
+		return board[getRow() + 1][getCol()];
 	}
 	
 	public Tile getLeftTile() {
-		return board[getPosX() - 1][getPosY()];
+		return board[getRow()][getCol() -1];
 	}
 	
 	public Tile getRightTile() {
-		return board[getPosX() + 1][getPosY()];
+		return board[getRow()][getCol() +1];
 	}
 	
 	public static void createBoard() {
