@@ -39,8 +39,6 @@ public class Main {
 		ui.getMainFrame();
 		System.out.println("Boosted Programmers");
 		
-		UI test = new UI();
-		
 	}
 	
 	static void createPlayers(Player players[]){

@@ -23,7 +23,7 @@ public class UI extends JFrame{
 			super();
 			try {
 				//imageBuffer = ImageIO.read(this.getClass().getResource(source));
-				imageBuffer = ImageIO.read(this.getClass().getResource(source));
+				imageBuffer = ImageIO.read(new File(source));
 			}	
 			catch(IOException exImage1) {
 				System.out.print("Image Exception: " + exImage1.getMessage());
