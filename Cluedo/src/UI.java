@@ -23,7 +23,7 @@ public class UI extends JFrame{
 			super();
 			try {
 				//imageBuffer = ImageIO.read(this.getClass().getResource(source));
-				imageBuffer = ImageIO.read(new File(source));
+				imageBuffer = ImageIO.read(this.getClass().getResource(source));
 			}	
 			catch(IOException exImage1) {
 				System.out.print("Image Exception: " + exImage1.getMessage());
@@ -58,9 +58,14 @@ public class UI extends JFrame{
 	JPanel	gridPanel	= new JPanel();
 	JPanel textPanel = new JPanel();
 	JTextArea textInfoField = new JTextArea(1,20);
-	String DEFAULTCOMD = "> ";
-	JTextField textComdField = new JTextField(DEFAULTCOMD);
+	static String DEFAULTCOMD = "> ";
+	static JTextField textComdField = new JTextField(DEFAULTCOMD); // Game commands are inputed here
 	
+	// Getter for the textInfoField (DANGEROUS)
+	public static JTextField getComd() {
+		return textComdField;
+	}
+
 	// Configure all the JComponents
 	public void getMainFrame() {
 		
@@ -114,6 +119,7 @@ public class UI extends JFrame{
 		mainFrame.setSize(880, 680);
 		mainFrame.setResizable(false);
 		
+
 		// Grid Panel stuff
 		gridPanel.setLocation(42, 24);
 		gridPanel.setSize(551, 573);
@@ -121,6 +127,20 @@ public class UI extends JFrame{
 		gridPanel.setLayout(null);
 		boardPanel.add(gridPanel);
 		gridPanel.setOpaque(false);
+
+	}
+	
+	public UI() {
+		super();
+		this.getMainFrame();
+	}
+	
+	// for testing purposes only
+	public static void main(String[] args) {
+	
+		UI test = new UI();
+		test.getMainFrame();
+		//System.out.println(UI.getComd().getText());
 		
 	}
 	
