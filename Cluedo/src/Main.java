@@ -27,6 +27,8 @@ public class Main {
 		createPlayers(players);
 		System.out.println("Boosted Programmers");
 		
+		UI test = new UI();
+		
 	}
 	
 	static void createPlayers(Player players[]){

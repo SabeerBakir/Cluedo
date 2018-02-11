@@ -22,7 +22,7 @@ public class UI extends JFrame{
 			super();
 			try {
 				//imageBuffer = ImageIO.read(this.getClass().getResource(source));
-				imageBuffer = ImageIO.read(new File(source));
+				imageBuffer = ImageIO.read(this.getClass().getResource(source));
 			}	
 			catch(IOException exImage1) {
 				System.out.print("Image Exception: " + exImage1.getMessage());
@@ -46,11 +46,16 @@ public class UI extends JFrame{
 	InnerPanel boardPanel = new InnerPanel("cluedoboard.jpg");
 	JPanel textPanel = new JPanel();
 	JTextArea textInfoField = new JTextArea(1,20);
-	String DEFAULTCOMD = "> ";
-	JTextField textComdField = new JTextField(DEFAULTCOMD);
+	static String DEFAULTCOMD = "> ";
+	static JTextField textComdField = new JTextField(DEFAULTCOMD); // Game commands are inputed here
 	
+	// Getter for the textInfoField (DANGEROUS)
+	public static JTextField getComd() {
+		return textComdField;
+	}
+
 	// Configure all the JComponents
-	private void getMainFrame() {
+	public void getMainFrame() {
 		
 		// Make the main frame
 		mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -102,13 +107,19 @@ public class UI extends JFrame{
 		mainFrame.setSize(895, 700);
 		mainFrame.setResizable(false);
 		
-	}	
+	}
+	
+	public UI() {
+		super();
+		this.getMainFrame();
+	}
 	
 	// for testing purposes only
 	public static void main(String[] args) {
 	
 		UI test = new UI();
 		test.getMainFrame();
+		//System.out.println(UI.getComd().getText());
 		
 	}
 
