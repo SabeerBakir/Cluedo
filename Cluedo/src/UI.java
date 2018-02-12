@@ -188,12 +188,15 @@ public class UI extends JFrame{
 				if(textComdField.getText().equals("> help")) textInfoField.append("Possible commands:\n"
 																			+ "> help: displays additional information\n"
 																			+ "> move: will move the Green player\ntoken down one tile\n"
+																			+ "> weapon: will move the rope to the\nLounge\n"
 																			+ "> exit: will exit the game\n"
 																			+ "-------------------------------------------------------\n");
 				
 				else if(textComdField.getText().equals("> move")) green.setLocation(green.getLocation().x, green.getLocation().y+23);
 				
 				else if(textComdField.getText().equals("> exit")) System.exit(0);
+				
+				else if(textComdField.getText().equals("> weapon")) rope.setLocation(weaponPoints[7]);
 				
 				else textInfoField.append("-------------------------------------------------------\nUnrecognised command\n-------------------------------------------------------\n");
 				
