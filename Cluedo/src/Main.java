@@ -19,9 +19,9 @@ public class Main {
 	@SuppressWarnings("unused")
 	public static void main(String[] args) {
 		
-		Player[] players = new Player[6];
-		createPlayers(players);
-		UI ui = new UI(players);
+//		Player[] players = new Player[6];
+//		createPlayers(players);
+		UI ui = new UI();
 		
 		
 		String[] suspects = {"Plum", "White", "Scarlet", "Green", "Mustard", "Peacock"};
@@ -34,10 +34,7 @@ public class Main {
 		String killerWeapon = weapons[rand.nextInt(weapons.length)];
 		String killerRoom = rooms[rand.nextInt(rooms.length)];
 		
-		
-	
-		ui.getMainFrame();
-		System.out.println("Boosted Programmers");
+		//System.out.println("Boosted Programmers");
 		
 	}
 	
