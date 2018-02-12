@@ -1,3 +1,7 @@
+//Kacper Twardowski (16401636)
+//Sabeer Bakir (16333886)
+//Aidan Mac Neill (16349586)
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.image.BufferedImage;
@@ -288,7 +292,7 @@ public class UI extends JFrame{
 	// for testing purposes only
 	public static void main(String[] args) {
 	
-		UI test = new UI();
+		//UI test = new UI();
 		//System.out.println(UI.getComd().getText());
 		
 	}

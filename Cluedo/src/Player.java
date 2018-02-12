@@ -1,3 +1,7 @@
+//Kacper Twardowski (16401636)
+//Sabeer Bakir (16333886)
+//Aidan Mac Neill (16349586)
+
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
