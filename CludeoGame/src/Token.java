@@ -31,5 +31,9 @@ public class Token {
     public boolean hasName(String name) {
         return this.name.toLowerCase().equals(name.toLowerCase().trim());
     }
+    
+    public String toString() {
+    	return name;
+    }
 
 }

@@ -10,7 +10,7 @@ public class Tokens implements Iterable<Token>, Iterator<Token> {
     Tokens() {
         suspects.add(new Token("Plum",new Color(142, 69, 133), new Coordinates(23,19)));
         suspects.add(new Token("White", Color.WHITE, new Coordinates(9,0)));
-        suspects.add(new Token("Scarlett",Color.RED, new Coordinates(7,24)));
+        suspects.add(new Token("Scarlet",Color.RED, new Coordinates(7,24)));
         suspects.add(new Token("Green",Color.GREEN, new Coordinates(14,0)));
         suspects.add(new Token("Mustard",Color.YELLOW, new Coordinates(0,17)));
         suspects.add(new Token("Peacock",Color.MAGENTA, new Coordinates(23,6)));
