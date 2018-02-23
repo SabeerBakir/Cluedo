@@ -20,20 +20,20 @@ public class Cluedo {
     
     private void testPlayers() {
         String command;
+        int playerCounter = 0; // keeps track of which players is making moves
         do {
-        	ui.displayString("Enter number of players: ");
+        	ui.displayString("[" + players.get(playerCounter).name + "] Enter Command: ");
         	command = ui.getCommand();
-        	
-        	
         	ui.displayString(command);
-            
             ui.display();
+            playerCounter = (playerCounter + 1) % players.getPlayerNum(); //moves onto the next player
         } while (!command.equals("quit"));
     }
 
     public static void main(String[] args) {
         Cluedo game = new Cluedo();
-        game.testUI();
+        //game.testUI();
+        game.testPlayers();
         System.exit(0);
     }
 }
