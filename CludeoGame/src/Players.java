@@ -43,14 +43,22 @@ public class Players implements Iterable<Player>, Iterator<Player> {
 					if (characterName == null) {
 						throw new InvalidCharacterName();
 					}
+					for(Player player : players){
+						if(characterName == player.getCharacter()){
+							throw new DuplicateCharacter();
+						}
+					}
 					tryCatch = false;
 				} catch (InvalidCharacterName e) {
 					ui.displayString("Please enter a valid character name");
-				} 
+				} catch (DuplicateCharacter e){
+					ui.displayString("Character has already been chosen");
+				}
 			}
+			
 			ui.displayString(characterName.toString());
     		
-    		players.add(new Player(i, playerName, characterName));
+    		players.add(new Player(i, playerName, characterName, characterName.getPosition()));
     		
     		if(i != playerNum - 1) {
     			ui.displayString("\n------- NEXT PLAYER -------\n");
@@ -69,7 +77,7 @@ public class Players implements Iterable<Player>, Iterator<Player> {
     
     public Player get(int id) {
         for (Player player : players) {
-            if (player.id == id) {
+            if (player.getID() == id) {
                 return player;
             }
         }

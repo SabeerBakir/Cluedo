@@ -22,7 +22,7 @@ public class Cluedo {
         String command;
         int playerCounter = 0; // keeps track of which players is making moves
         do {
-        	ui.displayString("[" + players.get(playerCounter).name + "] Enter Command: ");
+        	ui.displayString("[" + players.get(playerCounter).getName() + "] Enter Command: ");
         	command = ui.getCommand();
         	ui.displayString(command);
             ui.display();
