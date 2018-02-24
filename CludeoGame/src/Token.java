@@ -15,6 +15,10 @@ public class Token {
     public void moveBy(Coordinates move) {
         position.add(move);
     }
+    
+    public void moveBy(int x, int y) {
+    	position.add(new Coordinates(x,y));
+    }
 
     public String getName() {
         return name;

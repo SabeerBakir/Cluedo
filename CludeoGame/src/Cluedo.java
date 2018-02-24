@@ -4,6 +4,7 @@ public class Cluedo {
     private final Weapons weapons = new Weapons();
     private final UI ui = new UI(tokens,weapons);
     private final Players players = new Players(ui, tokens);
+    private final Mover mover = new Mover(players);
 
     private void testUI() {
         String command;
@@ -25,6 +26,7 @@ public class Cluedo {
         	ui.displayString("[" + players.get(playerCounter).getName() + "] Enter Command: ");
         	command = ui.getCommand();
         	ui.displayString(command);
+        	mover.move(playerCounter, command);
             ui.display();
             playerCounter = (playerCounter + 1) % players.getPlayerNum(); //moves onto the next player
         } while (!command.equals("quit"));
