@@ -2,7 +2,7 @@
 public class Rooms {
 	String rooms[] = {"Kitchen", "Ball Room", "Conservatory", "Dining Room", "Billiard Room", "Library", "Lounge", "Hall", "Study"};
 	
-	public void createRooms() {
+	public Rooms() {
 		Room kitchen = new Room(rooms[0], new Door(new Coordinates(6, 4), new Coordinates(7, 4), 1), null, null, null, true);
 		
 		Room ballroom = new Room(rooms[1], new Door(new Coordinates(5, 8), new Coordinates(5, 7), 1),
@@ -26,7 +26,6 @@ public class Rooms {
 		Room hall = new Room(rooms[7], new Door(new Coordinates(18, 11), new Coordinates(17, 11), 1),
 				new Door(new Coordinates(18, 12), new Coordinates(17, 12), 2),
 				new Door(new Coordinates(20, 14), new Coordinates(20, 15), 3), null, false);
-		
 		Room study = new Room(rooms[8], new Door(new Coordinates(21, 17), new Coordinates(20, 17), 1), null, null, null, true);
 	}
 }

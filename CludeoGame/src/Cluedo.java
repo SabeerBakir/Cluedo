@@ -5,6 +5,7 @@ public class Cluedo {
     private final UI ui = new UI(tokens,weapons);
     private final Players players = new Players(ui, tokens);
     private final Mover mover = new Mover(players);
+    private final Rooms rooms = new Rooms();
 
     private void testUI() {
         String command;
