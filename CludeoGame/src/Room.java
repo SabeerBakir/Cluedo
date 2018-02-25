@@ -1,12 +1,18 @@
 
 public class Room {
 	
+	private int id;
 	private String name;
 	private Door door1;
 	private Door door2;
 	private Door door3;
 	private Door door4;
 	private boolean hasTrapdoor;
+	private Coordinates centre;
+	
+	public int getID() {
+		return id;
+	}
 	
 	public String getName() {
 		return name;
@@ -32,6 +38,14 @@ public class Room {
 		return door4;
 	}
 	
+	public void setID(int id) {
+		this.id = id;
+	}
+	
+	public Coordinates getCentre() {
+		return centre;
+	}
+	
 	public void setName(String name) {
 		this.name = name;
 	}
@@ -52,12 +66,18 @@ public class Room {
 		door4 = door;
 	}
 	
-	public Room(String name, Door door1, Door door2, Door door3, Door door4, boolean hasTrapdoor) {
+	public void setCentre(Coordinates centre) {
+		this.centre = centre;
+	}
+	
+	public Room(int id, String name, Door door1, Door door2, Door door3, Door door4, Coordinates centre, boolean hasTrapdoor) {
+		this.id = id;
 		this.name = name;
 		this.door1 = door1;
 		this.door2 = door2;
 		this.door3 = door3;
 		this.door4 = door4;
+		this.centre = centre;
 		this.hasTrapdoor = hasTrapdoor;
 	}
 }
