@@ -73,25 +73,23 @@ public class Mover {
 		else return 1;
 	}
 	
-	private Boolean checkBounds(Token curr, int x, int y) {	//TODO			// check if the player can move to this slot
+	private Boolean checkBounds(Token curr, int x, int y) {			// check if the player can move to this slot
 		
 		int row = curr.getPosition().getRow();
 		int col = curr.getPosition().getCol();
 		
-		//System.out.println(row+y +" "+ col+x);
-		
-		if(row+y < 0 || row+y > 24) {//System.out.println("1st");
-			if(col+x < 0 || col+x > 24) {//System.out.println("2nd");
-				if(tileType[row+y][col+x] == 2) {//System.out.println("3rd");
-					for(Player player : players) {
-						if(player.getCharacter().getPosition().getRow() == row+y) return false;
-						if(player.getCharacter().getPosition().getCol() == col+x) return false;
+		if(row+y >= 0 && row+y <= 24) {
+			if(col+x >= 0 && col+x <= 24) {
+				if(tileType[row+y][col+x] != 2) {
+					for(Player player : players) {					// make sure that no other player occupies this slot
+						if(player.getCharacter().getPosition().getRow() == row+y && player.getCharacter().getPosition().getCol() == col+x && player.getCharacter() != curr) return false;
 					}
+					return true;
 				}
 			}
 		}
-		//System.out.println("4th");
-		return true;
+
+		return false;
 	}
 
 }
