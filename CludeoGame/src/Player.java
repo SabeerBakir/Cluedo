@@ -30,6 +30,10 @@ public class Player {
 		return pos;
 	}
 	
+	public void setPos(Coordinates pos) {
+		this.pos = pos;
+	}
+	
     public boolean hasName(String name) {
         return this.name.toLowerCase().equals(name.toLowerCase().trim());
     }

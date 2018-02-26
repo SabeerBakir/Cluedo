@@ -3,6 +3,7 @@ public class Mover {
 	
 	private Players players;
 	private Rooms rooms;
+	private Tokens tokens;
 	
 	private static int [][] tileType = new int[][] { // where 0 is a regular tile, 1 is a door tile, and 2 are tiles which are not moveable to
         {2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 2, 2, 2, 2, 0, 2, 2, 2, 2, 2, 2, 2, 2, 2},
@@ -44,6 +45,8 @@ public class Mover {
 			int y = -1;
 			Token curr = players.get(playerID).getCharacter();
 			if(!checkBounds(curr,x,y)) return 1;
+			if(moveIntoRoom(playerID, direction, curr) == 0)
+				return 0;
 			curr.moveBy(x, y);
 			return 0;
 		}
@@ -52,6 +55,8 @@ public class Mover {
 			int y = 1;
 			Token curr = players.get(playerID).getCharacter();
 			if(!checkBounds(curr,x,y)) return 1;
+			if(moveIntoRoom(playerID, direction, curr) == 0)
+				return 0;
 			curr.moveBy(x,y);
 			return 0;
 		}
@@ -60,6 +65,8 @@ public class Mover {
 			int y = 0;
 			Token curr = players.get(playerID).getCharacter();
 			if(!checkBounds(curr,x,y)) return 1;
+			if(moveIntoRoom(playerID, direction, curr) == 0)
+				return 0;
 			curr.moveBy(x,y);
 			return 0;
 		}
@@ -68,6 +75,8 @@ public class Mover {
 			int y = 0;
 			Token curr = players.get(playerID).getCharacter();
 			if(!checkBounds(curr,x,y)) return 1;
+			if(moveIntoRoom(playerID, direction, curr) == 0)
+				return 0;
 			curr.moveBy(x,y);
 			return 0;
 		}
@@ -93,7 +102,7 @@ public class Mover {
 		return false;
 	}
 	
-	private int moveIntoRoom(int id, String direction, Token curr) {
+	private int moveIntoRoom(int playerID, String direction, Token curr) {
 		
 		int row = curr.getPosition().getRow();
 		int col = curr.getPosition().getCol();
@@ -114,8 +123,8 @@ public class Mover {
 		
 		if(coord == rooms.get(2).getDoor1().getPos()) { // edge cases for doors on the corners of rooms which could inadvertently be accessed through walls
 			if(direction.equals("u") || direction.equals("up")) {
-				// move them to rooms.get(2).getCentre()
-				players.get(id).setRoom("Conservatory");
+				players.get(playerID).setPos(multiplePlayersInRoom(playerID, rooms.get(2)));
+				players.get(playerID).setRoom("Conservatory");
 				return 0;
 			}
 			else
@@ -123,8 +132,8 @@ public class Mover {
 		}
 		else if(coord == rooms.get(6).getDoor1().getPos()) {
 			if(direction.equals("d") || direction.equals("down")) {
-				// move them to rooms.get(6).getCentre()
-				players.get(id).setRoom("Lounge");
+				players.get(playerID).setPos(multiplePlayersInRoom(playerID, rooms.get(6)));
+				players.get(playerID).setRoom("Lounge");
 				return 0;
 			}
 			else
@@ -132,8 +141,8 @@ public class Mover {
 		}
 		else if(coord == rooms.get(8).getDoor1().getPos()) {
 			if(direction.equals("d") || direction.equals("down")) {
-				// move them to rooms.get(8).getCentre()
-				players.get(id).setRoom("Study");
+				players.get(playerID).setPos(multiplePlayersInRoom(playerID, rooms.get(8)));
+				players.get(playerID).setRoom("Study");
 				return 0;
 			}
 			else
@@ -142,14 +151,13 @@ public class Mover {
 		else if(tileType[row][col] == 1) {
 			for(int i = 0; i < 9; i++) {
 				if(coord == rooms.get(i).getDoor1().getPos() || coord == rooms.get(i).getDoor2().getPos() || coord == rooms.get(i).getDoor3().getPos() || coord == rooms.get(i).getDoor4().getPos()) {
-					// move them to rooms.get(i).getCentre()
-					players.get(id).setRoom(rooms.get(i).getName());
+					players.get(playerID).setPos(multiplePlayersInRoom(playerID, rooms.get(i)));
+					players.get(playerID).setRoom(rooms.get(i).getName());
 					return 0;
 				}
 			}
 		}
-		
-		return 1;	
+		return 1;
 	}
 	
 	private Coordinates multiplePlayersInRoom(int playerID, Room room) {
@@ -175,25 +183,25 @@ public class Mover {
 			else
 				return null;
 	}
-	
+
 	private int moveTrapdoor(int playerID) {
 		if(players.get(playerID).getRoom().equals("Kitchen")) {
-			// move player to rooms.get(8).getCentre()
+			players.get(playerID).setPos(multiplePlayersInRoom(playerID, rooms.get(8)));
 			players.get(playerID).setRoom("Study");
 			return 0;
 		}
 		else if(players.get(playerID).getRoom().equals("Conservatory")) {
-			// move player to rooms.get(6).getCentre()
+			players.get(playerID).setPos(multiplePlayersInRoom(playerID, rooms.get(6)));
 			players.get(playerID).setRoom("Lounge");
 			return 0;
 		}
 		else if(players.get(playerID).getRoom().equals("Lounge")) {
-			// move player to rooms.get(2).getCentre()
+			players.get(playerID).setPos(multiplePlayersInRoom(playerID, rooms.get(2)));
 			players.get(playerID).setRoom("Conservatory");
 			return 0;			
 		}
 		else if(players.get(playerID).getRoom().equals("Study")) {
-			// move player to rooms.get(0).getCentre()
+			players.get(playerID).setPos(multiplePlayersInRoom(playerID, rooms.get(0)));
 			players.get(playerID).setRoom("Kitchen");
 			return 0;
 		}
@@ -222,22 +230,22 @@ public class Mover {
 		}
 		
 		if(choice == 1) {
-			// move player to room.getDoor1().getEnterPos()
+			players.get(playerID).setPos(room.getDoor1().getEnterPos());
 			players.get(playerID).setRoom(null);
 			return 0;
 		}
 		else if(choice == 2) {
-			//move player to room.getDoor2().getEnterPos()
+			players.get(playerID).setPos(room.getDoor2().getEnterPos());
 			players.get(playerID).setRoom(null);
 			return 0;
 		}
 		else if(choice == 3) {
-			//move player to room.getDoor3().getEnterPos()
+			players.get(playerID).setPos(room.getDoor3().getEnterPos());
 			players.get(playerID).setRoom(null);
 			return 0;
 		}
 		else if(choice == 4) {
-			//move player to room.getDoor4().getEnterPos()
+			players.get(playerID).setPos(room.getDoor4().getEnterPos());
 			players.get(playerID).setRoom(null);
 			return 0;
 		}

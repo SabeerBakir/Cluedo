@@ -4,7 +4,7 @@ public class Token {
 
     private final String name;
     private final Color color;
-    private final Coordinates position;
+    private Coordinates position;
 
     Token(String name, Color color, Coordinates position) {
         this.name = name;
@@ -30,6 +30,10 @@ public class Token {
 
     public Coordinates getPosition() {
         return position;
+    }
+    
+    public void setPosition(Coordinates pos) {
+    	position = pos;
     }
 
     public boolean hasName(String name) {
