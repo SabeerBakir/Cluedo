@@ -214,7 +214,6 @@ public class Mover {
 			if(player.getRoom() != null && player.getRoom().equals(room.getName()) && player.getCharacter() != players.get(playerID).getCharacter() )
 				count++;
 		}
-		System.out.println(count);
 		if(count == 0)
 			return room.getCentre();
 		else if(count == 1)
