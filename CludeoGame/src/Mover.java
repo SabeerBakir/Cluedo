@@ -47,7 +47,7 @@ public class Mover {
 			Token curr = players.get(playerID).getCharacter();
 			if(!checkBounds(curr,x,y)) return 1;
 			if(moveIntoRoom(playerID, direction, curr) == 0)
-				return 0;
+				return 3;
 			curr.moveBy(x, y);
 			return 0;
 		}
@@ -57,7 +57,7 @@ public class Mover {
 			Token curr = players.get(playerID).getCharacter();
 			if(!checkBounds(curr,x,y)) return 1;
 			if(moveIntoRoom(playerID, direction, curr) == 0)
-				return 0;
+				return 3;
 			curr.moveBy(x,y);
 			return 0;
 		}
@@ -67,7 +67,7 @@ public class Mover {
 			Token curr = players.get(playerID).getCharacter();
 			if(!checkBounds(curr,x,y)) return 1;
 			if(moveIntoRoom(playerID, direction, curr) == 0)
-				return 0;
+				return 3;
 			curr.moveBy(x,y);
 			return 0;
 		}
@@ -77,7 +77,7 @@ public class Mover {
 			Token curr = players.get(playerID).getCharacter();
 			if(!checkBounds(curr,x,y)) return 1;
 			if(moveIntoRoom(playerID, direction, curr) == 0)
-				return 0;
+				return 3;
 			curr.moveBy(x,y);
 			return 0;
 		}
@@ -283,8 +283,7 @@ public class Mover {
 		while(loop) {
 			// get the user to input what door they want to leave out of, with door 1 on the left of the room
 			// input value into choice
-			if(ui != null) 
-				ui.displayString("Enter the number of the door. Left to Right.");
+			ui.displayString("Enter the number of the door. Left to Right.");
 			
 			choice = Integer.valueOf(ui.getCommand());
 			
