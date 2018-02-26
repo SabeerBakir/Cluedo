@@ -3,7 +3,6 @@ public class Mover {
 	
 	private Players players;
 	private Rooms rooms = new Rooms();
-	private Tokens tokens;
 	private UI ui;
 	
 	private static int [][] tileType = new int[][] { // where 0 is a regular tile, 1 is a door tile, and 2 are tiles which are not moveable to
@@ -34,8 +33,9 @@ public class Mover {
         {2, 2, 2, 2, 2, 2, 2, 0, 2, 2, 2, 2, 2, 2, 2, 2, 0, 2, 2, 2, 2, 2, 2, 2},
     };
 
-	public Mover(Players players) {
+	public Mover(Players players, UI ui) {
 		this.players = players;
+		this.ui = ui;
 	}
 	
 	// returns 0 if moved successfully, 1 if the move failed
@@ -233,23 +233,35 @@ public class Mover {
 
 	public int moveTrapdoor(int playerID) {
 		if(players.get(playerID).getRoom().equals("Kitchen")) {
-			players.get(playerID).setPos(multiplePlayersInRoom(playerID, rooms.get(8)));
+			Coordinates room = multiplePlayersInRoom(playerID, rooms.get(8));
+			players.get(playerID).setPos(room);
+			players.get(playerID).getCharacter().setPosition(room);
 			players.get(playerID).setRoom("Study");
+			players.get(playerID).setOccupiedRoom(rooms.get(8));
 			return 0;
 		}
 		else if(players.get(playerID).getRoom().equals("Conservatory")) {
-			players.get(playerID).setPos(multiplePlayersInRoom(playerID, rooms.get(6)));
+			Coordinates room = multiplePlayersInRoom(playerID, rooms.get(6));
+			players.get(playerID).setPos(room);
+			players.get(playerID).getCharacter().setPosition(room);
 			players.get(playerID).setRoom("Lounge");
+			players.get(playerID).setOccupiedRoom(rooms.get(6));
 			return 0;
 		}
 		else if(players.get(playerID).getRoom().equals("Lounge")) {
-			players.get(playerID).setPos(multiplePlayersInRoom(playerID, rooms.get(2)));
+			Coordinates room = multiplePlayersInRoom(playerID, rooms.get(2));
+			players.get(playerID).setPos(room);
+			players.get(playerID).getCharacter().setPosition(room);
 			players.get(playerID).setRoom("Conservatory");
+			players.get(playerID).setOccupiedRoom(rooms.get(2));
 			return 0;			
 		}
 		else if(players.get(playerID).getRoom().equals("Study")) {
-			players.get(playerID).setPos(multiplePlayersInRoom(playerID, rooms.get(0)));
+			Coordinates room = multiplePlayersInRoom(playerID, rooms.get(0));
+			players.get(playerID).setPos(room);
+			players.get(playerID).getCharacter().setPosition(room);
 			players.get(playerID).setRoom("Kitchen");
+			players.get(playerID).setOccupiedRoom(rooms.get(0));
 			return 0;
 		}
 		else
@@ -268,12 +280,14 @@ public class Mover {
 			numDoors = 3;
 		else if(room.getDoor2() != null)
 			numDoors = 2;
-		
 		while(loop) {
 			// get the user to input what door they want to leave out of, with door 1 on the left of the room
 			// input value into choice
-			ui.displayString("Enter the number of the door. Left to Right.");
+			if(ui != null) 
+				ui.displayString("Enter the number of the door. Left to Right.");
+			
 			choice = Integer.valueOf(ui.getCommand());
+			
 			if(choice < 1 || choice > numDoors) {
 				// tell the user they picked an invalid door number, enter again
 				choice = Integer.valueOf(ui.getCommand());
@@ -284,22 +298,30 @@ public class Mover {
 		
 		if(choice == 1) {
 			players.get(playerID).setPos(room.getDoor1().getEnterPos());
+			players.get(playerID).getCharacter().setPosition(room.getDoor1().getEnterPos());
 			players.get(playerID).setRoom(null);
+			players.get(playerID).setOccupiedRoom(null);
 			return 0;
 		}
 		else if(choice == 2) {
 			players.get(playerID).setPos(room.getDoor2().getEnterPos());
+			players.get(playerID).getCharacter().setPosition(room.getDoor2().getEnterPos());
 			players.get(playerID).setRoom(null);
+			players.get(playerID).setOccupiedRoom(null);
 			return 0;
 		}
 		else if(choice == 3) {
 			players.get(playerID).setPos(room.getDoor3().getEnterPos());
+			players.get(playerID).getCharacter().setPosition(room.getDoor3().getEnterPos());
 			players.get(playerID).setRoom(null);
+			players.get(playerID).setOccupiedRoom(null);
 			return 0;
 		}
 		else if(choice == 4) {
 			players.get(playerID).setPos(room.getDoor4().getEnterPos());
+			players.get(playerID).getCharacter().setPosition(room.getDoor4().getEnterPos());
 			players.get(playerID).setRoom(null);
+			players.get(playerID).setOccupiedRoom(null);
 			return 0;
 		}
 		else
