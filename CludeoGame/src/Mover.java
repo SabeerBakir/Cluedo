@@ -151,5 +151,98 @@ public class Mover {
 		
 		return 1;	
 	}
+	
+	private Coordinates multiplePlayersInRoom(int playerID, Room room) {
+		int count = 0;
+		int row = room.getCentre().getRow();
+		int col = room.getCentre().getCol();
+		for(Player player: players) {
+			if(player.getRoom().equals(room.getName()) && player != players.get(playerID))
+				count++;
+		}
+			if(count == 0)
+				return room.getCentre();
+			else if(count == 1)
+				return new Coordinates(row, col++);
+			else if(count == 2)
+				return new Coordinates(row++, col);
+			else if(count == 3)
+				return new Coordinates(row++, col++);
+			else if(count == 4)
+				return new Coordinates(row, col+2);
+			else if(count == 5)
+				return new Coordinates(row++, col+2);
+			else
+				return null;
+	}
+	
+	private int moveTrapdoor(int playerID) {
+		if(players.get(playerID).getRoom().equals("Kitchen")) {
+			// move player to rooms.get(8).getCentre()
+			players.get(playerID).setRoom("Study");
+			return 0;
+		}
+		else if(players.get(playerID).getRoom().equals("Conservatory")) {
+			// move player to rooms.get(6).getCentre()
+			players.get(playerID).setRoom("Lounge");
+			return 0;
+		}
+		else if(players.get(playerID).getRoom().equals("Lounge")) {
+			// move player to rooms.get(2).getCentre()
+			players.get(playerID).setRoom("Conservatory");
+			return 0;			
+		}
+		else if(players.get(playerID).getRoom().equals("Study")) {
+			// move player to rooms.get(0).getCentre()
+			players.get(playerID).setRoom("Kitchen");
+			return 0;
+		}
+		else
+			return 1;
+	}
+	
+	private int exitRoom(int playerID, Room room) {
+		int numDoors = 1, choice = 0;
+		boolean loop = true;
+		if(room.getDoor4() != null)
+			numDoors = 4;
+		else if(room.getDoor3() != null)
+			numDoors = 3;
+		else if(room.getDoor2() != null)
+			numDoors = 2;
+		
+		while(loop) {
+			// get the user to input what door they want to leave out of, with door 1 on the left of the room
+			// input value into choice
+			if(choice < 1 || choice > numDoors) {
+				// tell the user they picked an invalid door number, enter again
+			}
+			else
+				loop = false;
+		}
+		
+		if(choice == 1) {
+			// move player to room.getDoor1().getEnterPos()
+			players.get(playerID).setRoom(null);
+			return 0;
+		}
+		else if(choice == 2) {
+			//move player to room.getDoor2().getEnterPos()
+			players.get(playerID).setRoom(null);
+			return 0;
+		}
+		else if(choice == 3) {
+			//move player to room.getDoor3().getEnterPos()
+			players.get(playerID).setRoom(null);
+			return 0;
+		}
+		else if(choice == 4) {
+			//move player to room.getDoor4().getEnterPos()
+			players.get(playerID).setRoom(null);
+			return 0;
+		}
+		else
+			return 1;
+	}
 
 }
