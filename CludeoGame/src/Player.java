@@ -6,6 +6,7 @@ public class Player {
 	private Token character;		// Token linked to the character
 	private Coordinates pos;		// Coordinates for this player's character
 	private String room;			// Name of the room the player is in
+	private Room occupiedRoom;
 	
 	public Player(int id, String name, Token character, Coordinates pos) {
 		this.id = id;
@@ -13,6 +14,7 @@ public class Player {
 		this.character = character;
 		this.pos = pos;
 		room = null;
+		occupiedRoom = null;
 	}
 	
 	public int getID() {
@@ -30,6 +32,14 @@ public class Player {
 		return pos;
 	}
 	
+    public String getRoom() {
+    	return room;
+    }
+    
+    public Room getOccupiedRoom() {
+    	return occupiedRoom;
+    }
+	
 	public void setPos(Coordinates pos) {
 		this.pos = pos;
 	}
@@ -38,11 +48,11 @@ public class Player {
         return this.name.toLowerCase().equals(name.toLowerCase().trim());
     }
     
-    public String getRoom() {
-    	return room;
-    }
-    
     public void setRoom(String room) {
     	this.room = room;
+    }
+    
+    public void setOccupiedRoom(Room room) {
+    	occupiedRoom = room;
     }
 }

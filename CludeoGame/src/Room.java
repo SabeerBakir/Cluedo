@@ -9,6 +9,7 @@ public class Room {
 	private Door door4;
 	private boolean hasTrapdoor;
 	private Coordinates centre;
+	private int numRooms;
 	
 	public int getID() {
 		return id;
@@ -46,6 +47,10 @@ public class Room {
 		return centre;
 	}
 	
+	public int getNumRooms() {
+		return numRooms;
+	}
+	
 	public void setName(String name) {
 		this.name = name;
 	}
@@ -70,8 +75,13 @@ public class Room {
 		this.centre = centre;
 	}
 	
-	public Room(int id, String name, Door door1, Door door2, Door door3, Door door4, Coordinates centre, boolean hasTrapdoor) {
+	public void setNumRooms(int rooms) {
+		numRooms = rooms;
+	}
+	
+	public Room(int id, int numRooms, String name, Door door1, Door door2, Door door3, Door door4, Coordinates centre, boolean hasTrapdoor) {
 		this.id = id;
+		this.numRooms = numRooms;
 		this.name = name;
 		this.door1 = door1;
 		this.door2 = door2;
