@@ -2,7 +2,7 @@
 public class Mover {
 	
 	private Players players;
-	private Rooms rooms;
+	private Rooms rooms = new Rooms();
 	private Tokens tokens;
 	
 	private static int [][] tileType = new int[][] { // where 0 is a regular tile, 1 is a door tile, and 2 are tiles which are not moveable to
