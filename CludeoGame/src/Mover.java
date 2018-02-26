@@ -4,6 +4,7 @@ public class Mover {
 	private Players players;
 	private Rooms rooms = new Rooms();
 	private Tokens tokens;
+	private UI ui;
 	
 	private static int [][] tileType = new int[][] { // where 0 is a regular tile, 1 is a door tile, and 2 are tiles which are not moveable to
         {2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 2, 2, 2, 2, 0, 2, 2, 2, 2, 2, 2, 2, 2, 2},
@@ -230,7 +231,7 @@ public class Mover {
 			return null;
 	}
 
-	private int moveTrapdoor(int playerID) {
+	public int moveTrapdoor(int playerID) {
 		if(players.get(playerID).getRoom().equals("Kitchen")) {
 			players.get(playerID).setPos(multiplePlayersInRoom(playerID, rooms.get(8)));
 			players.get(playerID).setRoom("Study");
@@ -255,7 +256,10 @@ public class Mover {
 			return 1;
 	}
 	
-	private int exitRoom(int playerID, Room room) {
+	public int exitRoom(int playerID, Room room) {
+		
+		if(players.get(playerID).getOccupiedRoom() == null) return 2;
+		
 		int numDoors = 1, choice = 0;
 		boolean loop = true;
 		if(room.getDoor4() != null)
@@ -268,8 +272,11 @@ public class Mover {
 		while(loop) {
 			// get the user to input what door they want to leave out of, with door 1 on the left of the room
 			// input value into choice
+			ui.displayString("Enter the number of the door. Left to Right.");
+			choice = Integer.valueOf(ui.getCommand());
 			if(choice < 1 || choice > numDoors) {
 				// tell the user they picked an invalid door number, enter again
+				choice = Integer.valueOf(ui.getCommand());
 			}
 			else
 				loop = false;
