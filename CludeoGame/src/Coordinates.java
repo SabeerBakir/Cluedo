@@ -19,4 +19,15 @@ public class Coordinates {
     public int getCol() {
         return col;
     }
+    
+    public boolean equals(Object o) {
+    	if (o == this)
+    		return true;
+    	
+    	if(!(o instanceof Coordinates))
+    		return false;
+    	Coordinates c = (Coordinates) o;
+    	
+    	return Double.compare(getCol(), c.getCol()) == 0 && Double.compare(getRow(), c.getRow()) == 0; 
+    	}
 }

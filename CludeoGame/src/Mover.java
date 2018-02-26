@@ -89,7 +89,7 @@ public class Mover {
 		int col = curr.getPosition().getCol();
 		
 		if(row+y >= 0 && row+y <= 24) {
-			if(col+x >= 0 && col+x <= 24) {
+			if(col+x >= 0 && col+x <= 23) {
 				if(tileType[row+y][col+x] != 2) {
 					for(Player player : players) {					// make sure that no other player occupies this slot
 						if(player.getCharacter().getPosition().getRow() == row+y && player.getCharacter().getPosition().getCol() == col+x && player.getCharacter() != curr) return false;
@@ -119,9 +119,9 @@ public class Mover {
 		else if(direction.equals("r") || direction.equals("right")) {
 			col++;
 		}
-		Coordinates coord = new Coordinates(row, col);
+		Coordinates coord = new Coordinates(col, row);
 		
-		if(coord == rooms.get(2).getDoor1().getPos()) { // edge cases for doors on the corners of rooms which could inadvertently be accessed through walls
+		if(coord.equals(rooms.get(2).getDoor1().getPos())) { // edge cases for doors on the corners of rooms which could inadvertently be accessed through walls
 			if(direction.equals("u") || direction.equals("up")) {
 				players.get(playerID).setPos(multiplePlayersInRoom(playerID, rooms.get(2)));
 				players.get(playerID).setRoom("Conservatory");
@@ -130,7 +130,7 @@ public class Mover {
 			else
 				return 1;
 		}
-		else if(coord == rooms.get(6).getDoor1().getPos()) {
+		else if(coord.equals(rooms.get(6).getDoor1().getPos())) {
 			if(direction.equals("d") || direction.equals("down")) {
 				players.get(playerID).setPos(multiplePlayersInRoom(playerID, rooms.get(6)));
 				players.get(playerID).setRoom("Lounge");
@@ -139,7 +139,7 @@ public class Mover {
 			else
 				return 1;
 		}
-		else if(coord == rooms.get(8).getDoor1().getPos()) {
+		else if(coord.equals(rooms.get(8).getDoor1().getPos())) {
 			if(direction.equals("d") || direction.equals("down")) {
 				players.get(playerID).setPos(multiplePlayersInRoom(playerID, rooms.get(8)));
 				players.get(playerID).setRoom("Study");
@@ -150,7 +150,7 @@ public class Mover {
 		}
 		else if(tileType[row][col] == 1) {
 			for(int i = 0; i < 9; i++) {
-				if(coord == rooms.get(i).getDoor1().getPos() || coord == rooms.get(i).getDoor2().getPos() || coord == rooms.get(i).getDoor3().getPos() || coord == rooms.get(i).getDoor4().getPos()) {
+				if(coord.equals(rooms.get(i).getDoor1().getPos()) || coord.equals(rooms.get(i).getDoor2().getPos()) || coord.equals(rooms.get(i).getDoor3().getPos()) || coord.equals(rooms.get(i).getDoor4().getPos())) {
 					players.get(playerID).setPos(multiplePlayersInRoom(playerID, rooms.get(i)));
 					players.get(playerID).setRoom(rooms.get(i).getName());
 					return 0;

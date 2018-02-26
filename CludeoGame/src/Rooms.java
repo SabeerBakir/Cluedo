@@ -5,34 +5,34 @@ public class Rooms implements Iterable<Room>, Iterator<Room>{
 	
 	private Iterator<Room> iterator;
 	String roomsArr[] = {"Kitchen", "Ball Room", "Conservatory", "Dining Room", "Billiard Room", "Library", "Lounge", "Hall", "Study"};
-	private final ArrayList<Room> rooms = new ArrayList<>();
+	private ArrayList<Room> rooms = new ArrayList<>();
 	
 	public Rooms() {
-		rooms.add(new Room(0, roomsArr[0], new Door(new Coordinates(6, 4), new Coordinates(7, 4), 1), null, null, null, new Coordinates(3, 2), true));
+		rooms.add(new Room(0, roomsArr[0], new Door(new Coordinates(4, 6), new Coordinates(4, 7), 1), null, null, null, new Coordinates(2, 3), true));
 		
-		rooms.add(new Room(1, roomsArr[1], new Door(new Coordinates(5, 8), new Coordinates(5, 7), 1),
-				new Door(new Coordinates(7, 9), new Coordinates(8, 9), 2),
-				new Door(new Coordinates(7, 14), new Coordinates(8, 14), 3),
-				new Door(new Coordinates(5, 15), new Coordinates(5, 16), 4), new Coordinates(4, 11), false));
+		rooms.add(new Room(1, roomsArr[1], new Door(new Coordinates(8, 5), new Coordinates(7, 5), 1),
+				new Door(new Coordinates(9, 7), new Coordinates(9, 8), 2),
+				new Door(new Coordinates(14, 7), new Coordinates(14, 8), 3),
+				new Door(new Coordinates(15, 5), new Coordinates(16, 5), 4), new Coordinates(11, 4), false));
 		
-		rooms.add(new Room(2, roomsArr[2], new Door(new Coordinates(4, 18), new Coordinates(5, 18), 1), null, null, null, new Coordinates(3, 20),true));
+		rooms.add(new Room(2, roomsArr[2], new Door(new Coordinates(18, 4), new Coordinates(18, 5), 1), null, null, null, new Coordinates(20, 3),true));
 		
-		rooms.add(new Room(3, roomsArr[3], new Door(new Coordinates(15, 6), new Coordinates(16, 6), 1),
-				new Door(new Coordinates(12, 7), new Coordinates(12, 8), 2), null, null, new Coordinates(12, 3), false));
+		rooms.add(new Room(3, roomsArr[3], new Door(new Coordinates(6, 15), new Coordinates(6, 16), 1),
+				new Door(new Coordinates(7, 12), new Coordinates(8, 12), 2), null, null, new Coordinates(3, 12), false));
 		
-		rooms.add(new Room(4, roomsArr[4], new Door(new Coordinates(9, 18), new Coordinates(9, 17), 1),
-				new Door(new Coordinates(12, 22), new Coordinates(13, 22), 2), null, null, new Coordinates(10, 20), false));
+		rooms.add(new Room(4, roomsArr[4], new Door(new Coordinates(18, 9), new Coordinates(17, 9), 1),
+				new Door(new Coordinates(22, 12), new Coordinates(22, 13), 2), null, null, new Coordinates(20, 10), false));
 		
-		rooms.add(new Room(5, roomsArr[5], new Door(new Coordinates(16, 17), new Coordinates(16, 16), 1),
-				new Door(new Coordinates(14, 20), new Coordinates(13, 20), 2), null, null, new Coordinates(16, 20), false));
+		rooms.add(new Room(5, roomsArr[5], new Door(new Coordinates(17, 16), new Coordinates(16, 16), 1),
+				new Door(new Coordinates(20, 14), new Coordinates(20, 13), 2), null, null, new Coordinates(20, 16), false));
 		
-		rooms.add(new Room(6, roomsArr[6], new Door(new Coordinates(19, 6), new Coordinates(18, 6), 1), null, null, null, new Coordinates(2, 21), true));
+		rooms.add(new Room(6, roomsArr[6], new Door(new Coordinates(6, 19), new Coordinates(6, 18), 1), null, null, null, new Coordinates(21, 2), true));
 		
-		rooms.add(new Room(7, roomsArr[7], new Door(new Coordinates(18, 11), new Coordinates(17, 11), 1),
-				new Door(new Coordinates(18, 12), new Coordinates(17, 12), 2),
-				new Door(new Coordinates(20, 14), new Coordinates(20, 15), 3), null, new Coordinates(21, 11), false));
+		rooms.add(new Room(7, roomsArr[7], new Door(new Coordinates(11, 18), new Coordinates(11, 17), 1),
+				new Door(new Coordinates(12, 18), new Coordinates(12, 17), 2),
+				new Door(new Coordinates(14, 20), new Coordinates(15, 20), 3), null, new Coordinates(11, 21), false));
 		
-		rooms.add(new Room(8, roomsArr[8], new Door(new Coordinates(21, 17), new Coordinates(20, 17), 1), null, null, null,new Coordinates(22, 19), true));
+		rooms.add(new Room(8, roomsArr[8], new Door(new Coordinates(17, 21), new Coordinates(17, 20), 1), null, null, null,new Coordinates(19, 22), true));
 	}
 	
 	public Room get(int id) {
@@ -57,5 +57,4 @@ public class Rooms implements Iterable<Room>, Iterator<Room>{
 	public Room next() {
 		return iterator.next();
 	}
-
 }
