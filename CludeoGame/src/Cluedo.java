@@ -26,6 +26,11 @@ public class Cluedo {
         	ui.displayString("[" + players.get(playerCounter).getName() + "] Enter Command: ");
         	command = ui.getCommand();
         	ui.displayString(command);
+        	if(command.replaceAll("[^a-zA-Z]","").toLowerCase().equals("leave")) {
+        	//	if() {
+        	//		
+        	//	}
+        	}
         	mover.move(playerCounter, command);
             ui.display();
             playerCounter = (playerCounter + 1) % players.getPlayerNum(); //moves onto the next player
