@@ -9,6 +9,7 @@ public class Player {
 	private String room;			// Name of the room the player is in
 	private Room occupiedRoom;
 	private Cards playersCards;	// The players deck of cards
+	private Notes notes;
 	
 	public Player(int id, String name, Token character, Coordinates pos) {
 		this.id = id;
@@ -18,6 +19,7 @@ public class Player {
 		room = null;
 		occupiedRoom = null;
 		playersCards = new Cards();
+		notes = new Notes();
 	}
 	
 	public int getID() {
@@ -45,6 +47,10 @@ public class Player {
     
     public Cards getCards(){
     	return playersCards;
+    }
+    
+    public Notes getNotes(){
+    	return notes;
     }
 	
 	public void setPos(Coordinates pos) {

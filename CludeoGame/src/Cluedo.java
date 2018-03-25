@@ -43,7 +43,7 @@ public class Cluedo {
         String command;
         int playerCounter = players.shufflePlayers(dice); // keeps track of which players is making moves
         ui.displayString("\nDice rolled. Player number " + (playerCounter+1) + " will start the game.");
-        ui.displayString("\nComamnds:\nquit - exit the game\nroll - roll the dice\nmove - move the player\nleave - leave the room\npassage - use the passage\ncards - display your cards\n");
+        ui.displayString("\nComamnds:\nquit - exit the game\nroll - roll the dice\nmove - move the player\nleave - leave the room\npassage - use the passage\ncards - display your cards\nnotes - display your notes\n");
         do {
             Boolean diceRolled = false;
             int rolls = 0;
@@ -88,6 +88,9 @@ public class Cluedo {
             		}
             		cardFrame.setVisible(true);
             	}
+            	else if(command.replaceAll("[^a-zA-Z]","").toLowerCase().equals("notes") && diceRolled) {
+            		ui.displayString(players.get(playerCounter).getNotes().toString());
+            	}
             	if(!diceRolled) ui.displayString("You must roll first.");
                 ui.display();
                 if(rolls == 0 && diceRolled) break;
@@ -129,19 +132,24 @@ public class Cluedo {
     	// Re-shuffle the deck
     	Collections.shuffle(deck.getList());
     	
-    	// Deal cards to each player
+    	// Deal cards to each player and mark it on the notes
     	while(deck.getList().size() > players.getPlayerNum()){
     		for(int i = 0; i < players.getPlayerNum(); i++){
-    			players.get(i).getCards().getList().add(deck.getList().remove(0));
+    			Card temp = deck.getList().remove(0);
+    			players.get(i).getCards().getList().add(temp);
+    			players.get(i).getNotes().recordNote(temp.getCardName(), "X");
     		}
     	}
-    	if(deck.getList().size() != 0){ // If there are any leftover cards
+    	if(deck.getList().size() != 0){ // If there are any leftover cards and add it to every players notes
     		JOptionPane.showMessageDialog(null, "There are " + deck.getList().size() + " Cards leftover");
     		JFrame cardFrame = new JFrame("Leftover Cards");
     		cardFrame.setSize((122 + 10) * deck.getList().size(), 250);
     		cardFrame.setLayout(new GridLayout());
     		for(Card card : deck){
     			cardFrame.add(card);
+    			for(Player player : players){
+    				player.getNotes().recordNote(card.getCardName(), "A");
+    			}
     		}
     		cardFrame.setVisible(true);
     	}
