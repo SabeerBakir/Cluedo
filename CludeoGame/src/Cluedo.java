@@ -1,3 +1,5 @@
+// Kacper Twardowski (16401636), Sabeer Bakir (16333886), Aidan Mac Neill (16349586)
+
 import java.awt.GridLayout;
 import java.util.Collections;
 
@@ -5,8 +7,6 @@ import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-
-// Kacper Twardowski (16401636), Sabeer Bakir (16333886), Aidan Mac Neill (16349586)
 
 public class Cluedo {
 
@@ -38,12 +38,11 @@ public class Cluedo {
     }
     
     private void testPlayers() {
-    	//players.shufflePlayers(dice);
     	dealCards();
         String command;
         int playerCounter = players.shufflePlayers(dice); // keeps track of which players is making moves
         ui.displayString("\nDice rolled. Player number " + (playerCounter+1) + " will start the game.");
-        ui.displayString("\nComamnds:\nquit - exit the game\nroll - roll the dice\nmove - move the player\nleave - leave the room\npassage - use the passage\ncards - display your cards\nnotes - display your notes\n");
+        ui.displayString("\nComamnds:\nquit - exit the game\nroll - roll the dice\nmove - move the player\nleave - leave the room\npassage - use the passage\ncards - display your cards\nnotes - display your notes\npass - pass your turn\ncheat - show the envelope\n");
         do {
             Boolean diceRolled = false;
             int rolls = 0;
@@ -83,6 +82,7 @@ public class Cluedo {
             		JFrame cardFrame = new JFrame("Your Cards");
             		cardFrame.setSize((122 + 10) * players.get(playerCounter).getCards().getList().size(), 250);
             		cardFrame.setLayout(new GridLayout());
+            		cardFrame.setResizable(false);
             		for(Card card : players.get(playerCounter).getCards()){
             			cardFrame.add(card);
             		}
@@ -90,6 +90,32 @@ public class Cluedo {
             	}
             	else if(command.replaceAll("[^a-zA-Z]","").toLowerCase().equals("notes") && diceRolled) {
             		ui.displayString(players.get(playerCounter).getNotes().toString());
+            	}
+            	else if(command.replaceAll("[^a-zA-Z]","").toLowerCase().equals("pass") && diceRolled) {
+            		ui.displayString("Turn passed.");
+            		rolls = 0;
+            	}
+            	else if(command.replaceAll("[^a-zA-Z]","").toLowerCase().equals("cheat") && diceRolled) {
+            		JFrame cheatFrame = new JFrame("Envelope");
+            		cheatFrame.setSize((122 + 10) * 3, 250);
+            		cheatFrame.setLayout(new GridLayout());
+            		cheatFrame.setResizable(false);
+            		for(Card card : envelope) {
+            			cheatFrame.add(card);
+            		}
+            		cheatFrame.setVisible(true);
+            	}
+            	else if(command.replaceAll("[^a-zA-Z]","").toLowerCase().startsWith("help")) {
+            		if(command.replaceAll("[^a-zA-Z]","").toLowerCase().endsWith("help")) ui.displayString("Help - Show help for commands.\n");
+            		if(command.replaceAll("[^a-zA-Z]","").toLowerCase().endsWith("quit")) ui.displayString("Quit - Ends the game.\n");
+            		if(command.replaceAll("[^a-zA-Z]","").toLowerCase().endsWith("roll")) ui.displayString("Roll - Roll the dice.\n");
+            		if(command.replaceAll("[^a-zA-Z]","").toLowerCase().endsWith("move")) ui.displayString("Move - Move your token.\nu for up\nd for down\nl for left\nr for right\n");
+            		if(command.replaceAll("[^a-zA-Z]","").toLowerCase().endsWith("leave")) ui.displayString("Leave - Leave the room.\nDoes nothing if not in a room.");
+            		if(command.replaceAll("[^a-zA-Z]","").toLowerCase().endsWith("passage")) ui.displayString("Passage - Use the passage in the room.\nDoes nothing if not in a room.");
+            		if(command.replaceAll("[^a-zA-Z]","").toLowerCase().endsWith("cards")) ui.displayString("Cards - Show your current cards.\n");
+            		if(command.replaceAll("[^a-zA-Z]","").toLowerCase().endsWith("notes")) ui.displayString("Notes - Show known card information.\n");
+            		if(command.replaceAll("[^a-zA-Z]","").toLowerCase().endsWith("pass")) ui.displayString("Pass - Pass your turn.\n");
+            		if(command.replaceAll("[^a-zA-Z]","").toLowerCase().endsWith("cheat")) ui.displayString("Cheat - Show the murder envelope.\n");
             	}
             	if(!diceRolled) ui.displayString("You must roll first.");
                 ui.display();
@@ -145,6 +171,7 @@ public class Cluedo {
     		JFrame cardFrame = new JFrame("Leftover Cards");
     		cardFrame.setSize((122 + 10) * deck.getList().size(), 250);
     		cardFrame.setLayout(new GridLayout());
+    		cardFrame.setResizable(false);
     		for(Card card : deck){
     			cardFrame.add(card);
     			for(Player player : players){

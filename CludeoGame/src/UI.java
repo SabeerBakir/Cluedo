@@ -48,5 +48,5 @@ public class UI {
     public void displayString(String string) {
         infoPanel.addText(string);
     }
-    
+        
 }
