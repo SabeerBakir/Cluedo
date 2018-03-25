@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 public class Players implements Iterable<Player>, Iterator<Player> {
 
@@ -102,6 +103,50 @@ public class Players implements Iterable<Player>, Iterator<Player> {
 	public Iterator<Player> iterator() {
 		iterator = players.iterator();
 		return iterator;
+	}
+	
+	public int shufflePlayers(Dice dice) {
+		
+		
+		ArrayList<Player> reroll = new ArrayList<>();	// list of players that need to be rerolled, if size == 1 no players need to be rerolled
+		
+		int highestRoll = 0;
+		int index = 0;
+		int[] rolls = new int[playerNum];
+		
+		for(Player player : players) {	// initial rolls for all players
+			rolls[index] = dice.roll();
+			if(rolls[index] > highestRoll) {	// find the highest roll
+				reroll.add(0, player);
+				highestRoll = rolls[index];
+			}
+			index++;
+			
+		}
+		
+		for(int i = 0; i < playerNum; i++) {	// add any other players with the highest roll
+			if(rolls[i] == highestRoll && !reroll.contains(players.get(i))) reroll.add(players.get(i));
+		}		
+		
+		int roll;
+		while(reroll.size()!=1) {	// roll for the players with the highest roll until only one highest roll remains
+			highestRoll = 0;
+			roll = 0;
+			List<Player> toRemove = new ArrayList<>();
+			for(Player player : reroll) {
+				roll = dice.roll();
+				if(roll >= highestRoll) {
+					highestRoll = roll;
+				}
+				else {
+					toRemove.add(player);
+				}
+			}
+			reroll.removeAll(toRemove);
+		}
+
+		return reroll.get(0).getID();
+		
 	}
 
 }

@@ -5,8 +5,8 @@ import java.util.Random;
 public class Dice {
 	
 	private Random randFace = new Random();
-	private int numberDice;
-	private int sides;
+	private int numberDice;	// Number of dice
+	private int sides;		// Number of sides
 
 	public Dice() {
 		this.numberDice = 1;

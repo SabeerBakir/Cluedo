@@ -38,9 +38,11 @@ public class Cluedo {
     }
     
     private void testPlayers() {
+    	//players.shufflePlayers(dice);
     	dealCards();
         String command;
-        int playerCounter = 0; // keeps track of which players is making moves
+        int playerCounter = players.shufflePlayers(dice); // keeps track of which players is making moves
+        ui.displayString("\nDice rolled. Player number " + (playerCounter+1) + " will start the game.");
         ui.displayString("\nComamnds:\nquit - exit the game\nroll - roll the dice\nmove - move the player\nleave - leave the room\npassage - use the passage\ncards - display your cards\n");
         do {
             Boolean diceRolled = false;
