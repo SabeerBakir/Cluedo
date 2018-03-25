@@ -59,4 +59,15 @@ public class Rooms implements Iterable<Room>, Iterator<Room>{
 	public Room next() {
 		return iterator.next();
 	}
+	
+    public String[] toStringArray(){ //returns an array of strings of the array list
+    	String[] names = new String[rooms.size()];
+    	int i = 0;
+    	for(Room room : rooms){
+    		names[i] = room.getName();
+    		i++;
+    	}
+    	
+		return names;   	
+    }
 }

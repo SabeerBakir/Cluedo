@@ -38,4 +38,14 @@ public class Tokens implements Iterable<Token>, Iterator<Token> {
         return iterator;
     }
 
+    public String[] toStringArray(){ //returns an array of strings of the array list
+    	String[] names = new String[suspects.size()];
+    	int i = 0;
+    	for(Token character : suspects){
+    		names[i] = character.getName();
+    		i++;
+    	}
+    	
+		return names;   	
+    }
 }

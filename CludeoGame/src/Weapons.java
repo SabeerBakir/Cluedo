@@ -9,10 +9,10 @@ public class Weapons implements Iterable<Weapon>, Iterator<Weapon> {
     Weapons() {
         weapons.add(new Weapon("Rope",new Coordinates(2,2)));
         weapons.add(new Weapon("Dagger",new Coordinates(12,3)));
-        weapons.add(new Weapon("Wrench",new Coordinates(20,4)));
-        weapons.add(new Weapon("Pistol",new Coordinates(2,12)));
+        weapons.add(new Weapon("Spanner",new Coordinates(20,4)));
+        weapons.add(new Weapon("Revolver",new Coordinates(2,12)));
         weapons.add(new Weapon("Candlestick",new Coordinates(3,20)));
-        weapons.add(new Weapon("Lead Pipe",new Coordinates(12,20)));
+        weapons.add(new Weapon("Lead Piping",new Coordinates(12,20)));
     }
 
     public Weapon get(String name) {
@@ -36,5 +36,15 @@ public class Weapons implements Iterable<Weapon>, Iterator<Weapon> {
         iterator = weapons.iterator();
         return iterator;
     }
-
+    
+    public String[] toStringArray(){ //returns an array of strings of the array list
+    	String[] names = new String[weapons.size()];
+    	int i = 0;
+    	for(Weapon weapon : weapons){
+    		names[i] = weapon.getName();
+    		i++;
+    	}
+    	
+		return names;   	
+    }
 }
