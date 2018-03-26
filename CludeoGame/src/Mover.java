@@ -266,6 +266,7 @@ public class Mover {
 			return 0;
 		} 
 		else
+			ui.displayString("The room you are in has no trapdoor.");
 			return 1;
 	}
 	
