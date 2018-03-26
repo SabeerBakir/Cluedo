@@ -2,14 +2,14 @@
 
 public class Player {
 
-	private int id;				// Player ID
+	private int id;					// Player ID
 	private String name;			// Player name (not the same as token name)
 	private Token character;		// Token linked to the character
 	private Coordinates pos;		// Coordinates for this player's character
 	private String room;			// Name of the room the player is in
-	private Room occupiedRoom;
-	private Cards playersCards;	// The players deck of cards
-	private Notes notes;
+	private Room occupiedRoom;		// The room th eplayer is in
+	private Cards playersCards;		// The players deck of cards
+	private Notes notes;			// The players notes
 	
 	public Player(int id, String name, Token character, Coordinates pos) {
 		this.id = id;

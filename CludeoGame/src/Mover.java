@@ -39,15 +39,15 @@ public class Mover {
 		this.ui = ui;
 	}
 	
-	// returns 0 if moved successfully, 1 if the move failed
+	// returns 0 if moved successfully, 1 if the move failed, 3 if moved into a room which finishes their go.
 	public int move(int playerID, String direction) {
 		direction = direction.replaceAll("[^a-zA-Z]","").toLowerCase(); // parse the string
 		if(direction.equals("u") || direction.equals("up")) {			// move up
 			int x = 0;
 			int y = -1;
 			Token curr = players.get(playerID).getCharacter();
-			if(!checkBounds(curr,x,y)) return 1;
-			if(moveIntoRoom(playerID, direction, curr) == 0)
+			if(!checkBounds(curr,x,y)) return 1; // prevents moving out of bounds
+			if(moveIntoRoom(playerID, direction, curr) == 0) // check to see in the player tried to move into a room
 				return 3;
 			curr.moveBy(x, y);
 			return 0;
@@ -207,7 +207,7 @@ public class Mover {
 		return 1;
 	}
 	
-	private Coordinates multiplePlayersInRoom(int playerID, Room room) {
+	private Coordinates multiplePlayersInRoom(int playerID, Room room) { // function check to allow multiple players to be in one room at a time
 		int count = 0;
 		int row = room.getCentre().getRow();
 		int col = room.getCentre().getCol();
@@ -217,8 +217,8 @@ public class Mover {
 				count++;
 		}
 		if(count == 0)
-			return room.getCentre();
-		else if(count == 1)
+			return room.getCentre(); // places players in the room such that no two tokens overlap, placing them in the order of	1 2 5
+		else if(count == 1) 																									//	3 4 6
 			return new Coordinates(col+1, row);
 		else if(count == 2)
 			return new Coordinates(col, row+1);
@@ -232,7 +232,7 @@ public class Mover {
 			return null;
 	}
 
-	public int moveTrapdoor(int playerID) {
+	public int moveTrapdoor(int playerID) { // called if the player decides to use the trapdoor in any of the four corner rooms
 		if(players.get(playerID).getRoom().equals("Kitchen")) {
 			Coordinates room = multiplePlayersInRoom(playerID, rooms.get(8));
 			players.get(playerID).setPos(room);
@@ -269,7 +269,7 @@ public class Mover {
 			return 1;
 	}
 	
-	public int exitRoom(int playerID, Room room) {
+	public int exitRoom(int playerID, Room room) { // called when a player chooses to exit a room, allowing them to choose a door to exit
 		
 		if(players.get(playerID).getOccupiedRoom() == null) return 2;
 		
@@ -283,20 +283,18 @@ public class Mover {
 			numDoors = 2;
 		while(loop) {
 			// get the user to input what door they want to leave out of, with door 1 on the left of the room
-			// input value into choice
-			ui.displayString("Enter the number of the door. Left to Right.");
+			ui.displayString("Enter the number of the door. Left (1) to Right (" + numDoors +").");
 			
 			choice = Integer.valueOf(ui.getCommand());
 			
-			if(choice < 1 || choice > numDoors) {
-				// tell the user they picked an invalid door number, enter again
-				choice = Integer.valueOf(ui.getCommand());
+			if(choice < 1 || choice > numDoors) { // run a loop to prevent illegal door choices or invalid character choices
+				ui.displayString("Invalid choice of door number or illegal character inputted, please try again.");
 			}
 			else
 				loop = false;
 		}
-		
-		if(choice == 1) {
+		// set the position of the player to the tile just beside the door.
+		if(choice == 1) { 
 			players.get(playerID).setPos(room.getDoor1().getEnterPos());
 			players.get(playerID).getCharacter().setPosition(room.getDoor1().getEnterPos());
 			players.get(playerID).setRoom(null);

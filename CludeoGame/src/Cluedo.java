@@ -2,10 +2,7 @@
 
 import java.awt.GridLayout;
 import java.util.Collections;
-
-import javax.swing.ImageIcon;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
 public class Cluedo {
@@ -23,26 +20,12 @@ public class Cluedo {
     private final Cards roomCards = new Cards(rooms.toStringArray(), "Cards/Rooms/");
     private final Cards envelope = new Cards();
     
-    
-    private void testUI() {
-        String command;
-        Token white = tokens.get("White");
-        Weapon dagger = weapons.get("Dagger");
-        do {
-            command = ui.getCommand();
-            ui.displayString(command);
-            white.moveBy(new Coordinates(0,+1));
-            dagger.moveBy(new Coordinates(+1,0));
-            ui.display();
-        } while (!command.equals("quit"));
-    }
-    
-    private void testPlayers() {
+    private void startGame() {
     	dealCards();
         String command;
         int playerCounter = players.shufflePlayers(dice); // keeps track of which players is making moves
         ui.displayString("\nDice rolled. Player number " + (playerCounter+1) + " will start the game.");
-        ui.displayString("\nComamnds:\nquit - exit the game\nroll - roll the dice\nmove - move the player\nleave - leave the room\npassage - use the passage\ncards - display your cards\nnotes - display your notes\npass - pass your turn\ncheat - show the envelope\n");
+        ui.displayString("\nCommands:\nquit - exit the game\nroll - roll the dice\nmove - move the player\nleave - leave the room\npassage - use the passage\ncards - display your cards\nnotes - display your notes\npass - pass your turn\ncheat - show the envelope\ncommands - display a list of commands\n");
         do {
             Boolean diceRolled = false;
             int rolls = 0;
@@ -61,13 +44,17 @@ public class Cluedo {
             			ui.displayString("You are not currently in a room.");
             		}
             		else rolls--;
+            		ui.displayString("You have "+ rolls +" moves remaining.");
             	}
             	else if(command.replaceAll("[^a-zA-Z]","").toLowerCase().equals("move") && diceRolled) {
             		ui.displayString("Enter the direction.");
                 	command = ui.getCommand();
                 	int choice = 4;
                 	choice = mover.move(playerCounter, command);
-                	if(choice == 0) rolls--;
+                	if(choice == 0) {
+                		rolls--;
+                		ui.displayString("You have "+ rolls + " moves remaining.");
+                	}
                 	if(choice == 1) ui.displayString("You cannot move here.");
                 	if(choice == 3) rolls = 0;
             	}
@@ -77,6 +64,9 @@ public class Cluedo {
             			mover.moveTrapdoor(playerCounter);
             			rolls = 0;
             		}
+            	}
+            	else if(command.replaceAll("[^a-zA-Z]","").toLowerCase().equals("commands") && diceRolled) {
+            		ui.displayString("\nCommands:\nquit - exit the game\nroll - roll the dice\nmove - move the player\nleave - leave the room\npassage - use the passage\ncards - display your cards\nnotes - display your notes\npass - pass your turn\ncheat - show the envelope\n");
             	}
             	else if(command.replaceAll("[^a-zA-Z]","").toLowerCase().equals("cards") && diceRolled) {
             		JFrame cardFrame = new JFrame("Your Cards");
@@ -116,6 +106,7 @@ public class Cluedo {
             		if(command.replaceAll("[^a-zA-Z]","").toLowerCase().endsWith("notes")) ui.displayString("Notes - Show known card information.\n");
             		if(command.replaceAll("[^a-zA-Z]","").toLowerCase().endsWith("pass")) ui.displayString("Pass - Pass your turn.\n");
             		if(command.replaceAll("[^a-zA-Z]","").toLowerCase().endsWith("cheat")) ui.displayString("Cheat - Show the murder envelope.\n");
+            		if(command.replaceAll("[^a-zA-Z]","").toLowerCase().endsWith("commands")) ui.displayString("Commands - Show a list of all commands.\n");
             	}
             	if(!diceRolled) ui.displayString("You must roll first.");
                 ui.display();
@@ -127,8 +118,7 @@ public class Cluedo {
 
     public static void main(String[] args) {
         Cluedo game = new Cluedo();
-        //game.testUI();
-        game.testPlayers();
+        game.startGame();
         System.exit(0);
     }
     

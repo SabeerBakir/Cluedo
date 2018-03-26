@@ -9,7 +9,7 @@ public class Rooms implements Iterable<Room>, Iterator<Room>{
 	String roomsArr[] = {"Kitchen", "Ball Room", "Conservatory", "Dining Room", "Billiard Room", "Library", "Lounge", "Hall", "Study"};
 	private ArrayList<Room> rooms = new ArrayList<>();
 	
-	public Rooms() {
+	public Rooms() { // create an ArrayList of rooms, containing all relevant data
 		rooms.add(new Room(0, 1, roomsArr[0], new Door(new Coordinates(4, 6), new Coordinates(4, 7), 1), null, null, null, new Coordinates(2, 3), true));
 		
 		rooms.add(new Room(1, 4, roomsArr[1], new Door(new Coordinates(8, 5), new Coordinates(7, 5), 1),
@@ -60,10 +60,10 @@ public class Rooms implements Iterable<Room>, Iterator<Room>{
 		return iterator.next();
 	}
 	
-    public String[] toStringArray(){ //returns an array of strings of the array list
+    public String[] toStringArray(){ // returns an array of strings of the array list
     	String[] names = new String[rooms.size()];
     	int i = 0;
-    	for(Room room : rooms){
+    	for(Room room : rooms) {
     		names[i] = room.getName();
     		i++;
     	}

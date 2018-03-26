@@ -16,19 +16,16 @@ public class Cards implements Iterable<Card>, Iterator<Card> {
 			cards.add(new Card(s, folderName + s + ".png"));
 		}
 	}
-	
-	@Override
+
 	public Iterator<Card> iterator() {
         iterator = cards.iterator();
         return iterator;
 	}
 
-	@Override
 	public boolean hasNext() {
 		return iterator.hasNext();
 	}
 
-	@Override
 	public Card next() {
 		return iterator.next();
 	}

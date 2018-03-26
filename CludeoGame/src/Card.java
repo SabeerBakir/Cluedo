@@ -14,7 +14,7 @@ public class Card extends JPanel{
 
 	private static final long serialVersionUID = 1L;
 	
-	   private static final int IMAGE_WIDTH = 122, IMAGE_HEIGHT = 200;
+	private static final int IMAGE_WIDTH = 122, IMAGE_HEIGHT = 200;
 	
 	private String cardName;
 	private String imagepath;
@@ -32,8 +32,7 @@ public class Card extends JPanel{
             System.out.println("Could not find the image file " + ex.toString());
         }
 	}
-	
-    @Override
+
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         Graphics2D g2 =(Graphics2D) g;

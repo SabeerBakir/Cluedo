@@ -6,7 +6,7 @@ public class Weapons implements Iterable<Weapon>, Iterator<Weapon> {
     private final ArrayList<Weapon> weapons = new ArrayList<>();
     private Iterator<Weapon> iterator;
 
-    Weapons() {
+    Weapons() { // create an ArrayList of the weapon tokens with their locations
         weapons.add(new Weapon("Rope",new Coordinates(2,2)));
         weapons.add(new Weapon("Dagger",new Coordinates(12,3)));
         weapons.add(new Weapon("Spanner",new Coordinates(20,4)));

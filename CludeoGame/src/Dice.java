@@ -40,7 +40,6 @@ public class Dice {
 		return total;
 	}
 	
-	@Override
 	public String toString() {
 		return "{ Sides: " + sides + ", Quantity: " + numberDice + " }";
 	}

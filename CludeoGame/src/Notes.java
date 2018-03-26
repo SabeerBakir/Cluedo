@@ -4,7 +4,7 @@ public class Notes {
 	private String[][] notes = new String[29][2];
 	
 	public Notes(){ //Constructor
-		notes[0][0] = "SUSPECTS";
+		notes[0][0] = "\nSUSPECTS";
 		notes[1][0] = "---------------";
 		notes[2][0] = "Mustard\t";
 		notes[3][0] = "Plum\t";
@@ -58,14 +58,5 @@ public class Notes {
 		}
 
 		return buf.toString();
-	}
-	
-	public static void main(String[] args){
-		Notes notes = new Notes();
-//		for(int i = 0; i < 29; i++){
-//			notes.notes[i][1] = "X";
-//		}
-//		System.out.println(notes.toString());
-		System.out.println(!notes.notes[28][0].trim().contains("Study"));
 	}
 }
