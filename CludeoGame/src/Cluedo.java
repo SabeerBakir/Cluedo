@@ -60,6 +60,7 @@ public class Cluedo {
             	}
             	else if(command.replaceAll("[^a-zA-Z]","").toLowerCase().equals("passage") && diceRolled) {
             		if(players.get(playerCounter).getOccupiedRoom()==null) ui.displayString("You are not currently in a room.");
+            		else if(mover.moveTrapdoor(playerCounter) == 1) ui.displayString("The room you are in has no trapdoor.");
             		else{
             			mover.moveTrapdoor(playerCounter);
             			rolls = 0;

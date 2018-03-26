@@ -27,9 +27,9 @@ public class Players implements Iterable<Player>, Iterator<Player> {
 				
 				tryCatch = false;
 			} catch (NumberFormatException e) {
-				ui.displayString("Please enter valid number");
+				ui.displayString("Please enter a valid number.");
 			} catch (InvalidPlayerAmountException e){
-				ui.displayString("Minimum 2 Players and Maximum 6 Players");
+				ui.displayString("Minimum 2 Players and Maximum 6 Players.");
 			}
     	}
     	
@@ -53,9 +53,9 @@ public class Players implements Iterable<Player>, Iterator<Player> {
 					}
 					tryCatch = false;
 				} catch (InvalidCharacterName e) {
-					ui.displayString("Please enter a valid character name");
+					ui.displayString("Please enter a valid character name; please try again.");
 				} catch (DuplicateCharacter e){
-					ui.displayString("Character has already been chosen");
+					ui.displayString("Character has already been chosen; please try again.");
 				}
 			}
 			

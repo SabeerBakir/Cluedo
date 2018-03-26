@@ -7,12 +7,12 @@ public class Weapons implements Iterable<Weapon>, Iterator<Weapon> {
     private Iterator<Weapon> iterator;
 
     Weapons() { // create an ArrayList of the weapon tokens with their locations
-        weapons.add(new Weapon("Rope",new Coordinates(2,2)));
-        weapons.add(new Weapon("Dagger",new Coordinates(12,3)));
-        weapons.add(new Weapon("Spanner",new Coordinates(20,4)));
-        weapons.add(new Weapon("Revolver",new Coordinates(2,12)));
-        weapons.add(new Weapon("Candlestick",new Coordinates(3,20)));
-        weapons.add(new Weapon("Lead Piping",new Coordinates(12,20)));
+        weapons.add(new Weapon("Rope",new Coordinates(2, 2)));
+        weapons.add(new Weapon("Dagger",new Coordinates(12, 3)));
+        weapons.add(new Weapon("Spanner",new Coordinates(19, 1)));
+        weapons.add(new Weapon("Revolver",new Coordinates(2, 12)));
+        weapons.add(new Weapon("Candlestick",new Coordinates(3, 20)));
+        weapons.add(new Weapon("Lead Piping",new Coordinates(12, 20)));
     }
 
     public Weapon get(String name) {

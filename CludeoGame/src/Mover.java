@@ -264,7 +264,7 @@ public class Mover {
 			players.get(playerID).setRoom("Kitchen");
 			players.get(playerID).setOccupiedRoom(rooms.get(0));
 			return 0;
-		}
+		} 
 		else
 			return 1;
 	}
@@ -281,6 +281,13 @@ public class Mover {
 			numDoors = 3;
 		else if(room.getDoor2() != null)
 			numDoors = 2;
+		if(numDoors == 1) {
+			players.get(playerID).setPos(room.getDoor1().getEnterPos());
+			players.get(playerID).getCharacter().setPosition(room.getDoor1().getEnterPos());
+			players.get(playerID).setRoom(null);
+			players.get(playerID).setOccupiedRoom(null);
+			return 0;
+		}
 		while(loop) {
 			// get the user to input what door they want to leave out of, with door 1 on the left of the room
 			ui.displayString("Enter the number of the door. Left (1) to Right (" + numDoors +").");
