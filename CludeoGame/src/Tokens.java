@@ -48,4 +48,8 @@ public class Tokens implements Iterable<Token>, Iterator<Token> {
     	
 		return names;   	
     }
+    
+    public int size() {
+    	return suspects.size();
+    }
 }

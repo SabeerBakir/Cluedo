@@ -70,4 +70,8 @@ public class Rooms implements Iterable<Room>, Iterator<Room>{
     	
 		return names;   	
     }
+    
+    public int size() {
+    	return rooms.size();
+    }
 }

@@ -47,4 +47,8 @@ public class Weapons implements Iterable<Weapon>, Iterator<Weapon> {
     	
 		return names;   	
     }
+    
+    public int size() {
+    	return weapons.size();
+    }
 }

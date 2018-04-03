@@ -56,7 +56,9 @@ public class Cluedo {
                 		ui.displayString("You have "+ rolls + " moves remaining.");
                 	}
                 	if(choice == 1) ui.displayString("You cannot move here.");
-                	if(choice == 3) rolls = 0;
+                	if(choice == 3) {
+                		rolls = 0;
+                	}
             	}
             	else if(command.replaceAll("[^a-zA-Z]","").toLowerCase().equals("passage") && diceRolled) {
             		if(players.get(playerCounter).getOccupiedRoom()==null) ui.displayString("You are not currently in a room.");
@@ -67,10 +69,10 @@ public class Cluedo {
             			rolls = 0;
             		}
             	}
-            	else if(command.replaceAll("[^a-zA-Z]","").toLowerCase().equals("commands") && diceRolled) {
+            	else if(command.replaceAll("[^a-zA-Z]","").toLowerCase().equals("commands")) {
             		ui.displayString("\nCommands:\nquit - exit the game\nroll - roll the dice\nmove - move the player\nleave - leave the room\npassage - use the passage\ncards - display your cards\nnotes - display your notes\npass - pass your turn\ncheat - show the envelope\n");
             	}
-            	else if(command.replaceAll("[^a-zA-Z]","").toLowerCase().equals("cards") && diceRolled) {
+            	else if(command.replaceAll("[^a-zA-Z]","").toLowerCase().equals("cards")) {
             		JFrame cardFrame = new JFrame("Your Cards");
             		cardFrame.setSize((122 + 10) * players.get(playerCounter).getCards().getList().size(), 250);
             		cardFrame.setLayout(new GridLayout());
@@ -80,7 +82,7 @@ public class Cluedo {
             		}
             		cardFrame.setVisible(true);
             	}
-            	else if(command.replaceAll("[^a-zA-Z]","").toLowerCase().equals("notes") && diceRolled) {
+            	else if(command.replaceAll("[^a-zA-Z]","").toLowerCase().equals("notes")) {
             		ui.displayString(players.get(playerCounter).getNotes().toString());
             	}
             	else if(command.replaceAll("[^a-zA-Z]","").toLowerCase().equals("pass") && diceRolled) {
@@ -96,6 +98,28 @@ public class Cluedo {
             			cheatFrame.add(card);
             		}
             		cheatFrame.setVisible(true);
+            	}
+            	else if(command.replaceAll("[^a-zA-Z]","").toLowerCase().equals("ask")) {
+            		if(players.get(playerCounter).getOccupiedRoom() == null) { // not currently in a room
+            			ui.displayString("You are not currently in a room");
+            		}
+            		else {
+	            		int askedPlayer = Math.abs((playerCounter - 1) % players.getPlayerNum()); // player to the left
+	            		int i = 0; // counter for how many players asked
+	            		ui.displayString("Enter Question to ask: ");
+	            		command = ui.getCommand();
+	            		ui.displayString(command);
+	            		while(i < players.getPlayerNum() - 1) {
+	            			if(players.get(playerCounter).askPlayer(players.get(askedPlayer), command) == 0) {
+	            				break;
+	            			}
+	            			i++;
+	            			askedPlayer = Math.abs((askedPlayer - 1) % players.getPlayerNum()); // move to the next player
+	            		}
+	            		if(i == (players.getPlayerNum() - 1)) { // If no players have a card that was asked
+	            			ui.displayString("No player has a card that you have asked for.");
+	            		}
+            		}
             	}
             	else if(command.replaceAll("[^a-zA-Z]","").toLowerCase().startsWith("help")) {
             		if(command.replaceAll("[^a-zA-Z]","").toLowerCase().endsWith("help")) ui.displayString("Help - Show help for commands.\n");
