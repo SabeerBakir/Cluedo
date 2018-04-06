@@ -6,7 +6,7 @@ import java.util.Iterator;
 public class Rooms implements Iterable<Room>, Iterator<Room>{
 	
 	private Iterator<Room> iterator;
-	String roomsArr[] = {"Kitchen", "Ball Room", "Conservatory", "Dining Room", "Billiard Room", "Library", "Lounge", "Hall", "Study"};
+	String roomsArr[] = {"Kitchen", "Ball Room", "Conservatory", "Dining Room", "Billiard Room", "Library", "Lounge", "Hall", "Study", "Basement"};
 	private ArrayList<Room> rooms = new ArrayList<>();
 	
 	public Rooms() { // create an ArrayList of rooms, containing all relevant data
@@ -34,7 +34,9 @@ public class Rooms implements Iterable<Room>, Iterator<Room>{
 				new Door(new Coordinates(12, 18), new Coordinates(12, 17), 2),
 				new Door(new Coordinates(14, 20), new Coordinates(15, 20), 3), null, new Coordinates(11, 21), false));
 		
-		rooms.add(new Room(8, 1, roomsArr[8], new Door(new Coordinates(17, 21), new Coordinates(17, 20), 1), null, null, null,new Coordinates(19, 22), true));
+		rooms.add(new Room(8, 1, roomsArr[8], new Door(new Coordinates(17, 21), new Coordinates(17, 20), 1), null, null, null, new Coordinates(19, 22), true));
+		
+		rooms.add(new Room(9, 1, roomsArr[9], new Door(new Coordinates(12, 16), new Coordinates(12, 17), 1), null, null, null, new Coordinates(12, 14), false));
 	}
 	
 	public Room get(int id) {
@@ -61,11 +63,13 @@ public class Rooms implements Iterable<Room>, Iterator<Room>{
 	}
 	
     public String[] toStringArray(){ // returns an array of strings of the array list
-    	String[] names = new String[rooms.size()];
+    	String[] names = new String[rooms.size()-1];
     	int i = 0;
     	for(Room room : rooms) {
-    		names[i] = room.getName();
-    		i++;
+    		if(room.getID()!=9) {
+        		names[i] = room.getName();
+        		i++;
+    		}
     	}
     	
 		return names;   	

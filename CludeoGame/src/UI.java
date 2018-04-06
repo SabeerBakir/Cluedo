@@ -34,6 +34,8 @@ public class UI {
         leftPanel.add(commandPanel, BorderLayout.SOUTH);
         frame.add(leftPanel, BorderLayout.EAST);
         frame.setResizable(false);
+        frame.pack();
+        frame.setLocationRelativeTo(null);
         frame.setVisible(true);
     }
 
