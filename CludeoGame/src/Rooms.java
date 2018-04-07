@@ -48,6 +48,15 @@ public class Rooms implements Iterable<Room>, Iterator<Room>{
         return null;
     }
 	
+	public Room get(String name) {
+        for (Room room : rooms) {
+            if (room.hasName(name)) {
+                return room;
+            }
+        }
+        return null;
+    }
+	
 	public Iterator<Room> iterator() {
 		iterator = rooms.iterator();
 		return iterator;

@@ -73,46 +73,14 @@ public class Player {
     	occupiedRoom = room;
     }
     
-    public int askPlayer(Player player, String question) { 
-    	Tokens tokens = new Tokens();
-    	Weapons weapons = new Weapons();
-    	Rooms rooms = new Rooms();    	
+    public void askPlayer(Player player, String suspect, String weapon, String room) {
     	
-    	String character = null;
-    	String weapon = null;
-    	String room = null;
-    	
-    	// Extract the key information from the question
-    	for(Token s : tokens) {
-    		if(question.toLowerCase().contains(s.getName().toLowerCase())) {
-    			character = s.getName();
-    			break;
-    		}
-    	}
-    	
-    	for(Weapon s : weapons) {
-    		if(question.toLowerCase().contains(s.getName().toLowerCase())) {
-    			weapon = s.getName();
-    			break;
-    		}
-    	}
-    	
-    	for(Room s : rooms) {
-    		if(question.toLowerCase().contains(s.getName().toLowerCase())) {
-    			room = s.getName();
-    			break;
-    		}
-    	}
-    	
-    	if(character == null || weapon == null || room == null) {
-    		return 1; // Error, question did not contain enough info
-    	}
-    	
+
     	ArrayList<String> info = new ArrayList<>();
     	
     	// check asked players cards
     	for(Card s : player.getCards()) {
-    		if(s.getCardName() == character || s.getCardName() == weapon || s.getCardName() == room) {
+    		if(s.getCardName() == suspect || s.getCardName() == weapon || s.getCardName() == room) {
     			info.add(s.getCardName());
     		}
     	}
@@ -169,7 +137,5 @@ public class Player {
         		
     		}
     	}
-    	
-		return 0;    	
     }
 }

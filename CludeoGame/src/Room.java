@@ -80,6 +80,14 @@ public class Room {
 		numRooms = rooms;
 	}
 	
+    public boolean hasName(String name) {
+        return this.name.toLowerCase().equals(name.toLowerCase().trim());
+    }
+    
+    public String toString() {
+    	return name;
+    }
+	
 	public Room(int id, int numRooms, String name, Door door1, Door door2, Door door3, Door door4, Coordinates centre, boolean hasTrapdoor) {
 		this.id = id;
 		this.numRooms = numRooms;
