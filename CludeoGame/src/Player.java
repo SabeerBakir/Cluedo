@@ -15,6 +15,7 @@ public class Player {
 	private Cards playersCards;		// The players deck of cards
 	private Notes notes;			// The players notes
 	private Logbook log;			// Player Logbook
+	private boolean isPlaying;		// If the player is playing
 
 	public Player(int id, String name, Token character, Coordinates pos) {
 		this.id = id;
@@ -26,6 +27,7 @@ public class Player {
 		playersCards = new Cards();
 		notes = new Notes();
 		log = new Logbook();
+		isPlaying = true;
 	}
 	
 	public int getID() {
@@ -63,6 +65,10 @@ public class Player {
 		return log;
 	}
 	
+	public boolean isPlaying() {
+		return isPlaying;
+	}
+	
 	public void setPos(Coordinates pos) {
 		this.pos = pos;
 	}
@@ -78,6 +84,10 @@ public class Player {
     public void setOccupiedRoom(Room room) {
     	occupiedRoom = room;
     }
+    
+	public void setPlaying(boolean isPlaying) {
+		this.isPlaying = isPlaying;
+	}
     
     public int askPlayer(Player player, String suspect, String weapon, String room, Logbook askingLog, Logbook askedLog) {
     	

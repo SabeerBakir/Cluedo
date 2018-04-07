@@ -12,7 +12,7 @@ public class Logbook {
 	}
 	
 	public void addAnswer(String askedPlayer, String cardName){
-		log.add(askedPlayer + " revealed too you " + cardName + "\n");
+		log.add(askedPlayer + " revealed to you: " + cardName + "\n");
 	}
 	
 	public void addReveal(String player, String cardName){
@@ -29,6 +29,7 @@ public class Logbook {
 		}
 		else{
 			StringBuffer buf = new StringBuffer();
+			buf.append("\n");
 			for(int i = 0; i < log.size(); i++){
 				buf.append(log.get(i) + "\n");
 			}

@@ -24,6 +24,7 @@ public class Cluedo {
     	dealCards();
         String command;
         int playerCounter = players.shufflePlayers(dice); // keeps track of which players is making moves
+        int playablePlayers = players.getPlayerNum(); // used to check if there is one player left after too many accusations
         ui.displayString("\nDice rolled. Player number " + (playerCounter+1) + " will start the game.");
 		ui.displayString("\nCommands:\nquit - exit the game\nroll - roll the dice\nmove - move the player\nleave - leave the room\npassage - use the passage\ncards - display your cards\nnotes - display your notes\nask - Ask a question.\nlog - Display log of questions and answers.\npass - pass your turn\ncheat - show the envelope\n");
         do {
@@ -163,8 +164,6 @@ public class Cluedo {
             		else{
 	            		int askedPlayer = Math.abs((playerCounter - 1) % players.getPlayerNum()); // player to the left
 	            		int i = 0; // counter for how many players asked
-	            		
-	            		// COME BACK AND FIX THIS SHIT
 	            		String suspectQuestion = null;
 	            		String weaponQuestion = null;
 	            		String roomQuestion = players.get(playerCounter).getRoom();
@@ -223,6 +222,65 @@ public class Cluedo {
 	            		}
             		}
             	}
+            	else if(command.replaceAll("[^a-zA-Z]","").toLowerCase().equals("accuse") && diceRolled) {
+            		if(players.get(playerCounter).getOccupiedRoom() == null){
+            			ui.displayString("You are currently not in a room.");
+            		}
+            		else{
+	            		String suspectQuestion = null;
+	            		String weaponQuestion = null;
+	            		String roomQuestion = players.get(playerCounter).getRoom();
+	            		
+	            		ui.displayString("You are accusing: ");
+	            		ui.displayString("Suspect: ");
+	            		command = ui.getCommand();
+	            		ui.displayString(command);
+	            		
+	            		while(suspectQuestion == null){
+	            			if(tokens.get(command) == null){
+	            				suspectQuestion = null;
+	            			}
+	            			else{
+	            				suspectQuestion = tokens.get(command).toString();
+	            			}
+	            			if(suspectQuestion == null){
+	            				ui.displayString("Enter Valid Suspect: ");
+	                    		command = ui.getCommand();
+	                    		ui.displayString(command);
+	            			}
+	            		}
+	            		
+	            		ui.displayString("Weapon: ");
+	            		command = ui.getCommand();
+	            		ui.displayString(command);
+	            		while(weaponQuestion == null){
+	            			if(weapons.get(command) == null){
+	            				weaponQuestion = null;
+	            			}
+	            			else{
+	            				weaponQuestion = weapons.get(command).toString();
+	            			}
+	            			if(weaponQuestion == null){
+	            				ui.displayString("Enter Valid Weapon: ");
+	                    		command = ui.getCommand();
+	                    		ui.displayString(command);
+	            			}
+	            		}
+	            		
+	            		// WIN CONDITION
+	            		if(suspectQuestion == envelope.getList().get(1).getCardName() && weaponQuestion ==  envelope.getList().get(0).getCardName() && roomQuestion == envelope.getList().get(2).getCardName()){
+	            			ui.displayString(players.get(playerCounter).getName() + " has won the game!, Press enter to exit");
+	            			ui.getCommand();
+	            			command = "quit";
+	            		}
+	            		else{
+	            			ui.displayString(players.get(playerCounter).getName() + " made an incorrect accusation is unable to ask or move or roll or accuse again");
+	            			players.get(playerCounter).setPlaying(false);
+	            			rolls = 0;
+	            			playablePlayers--;	            			
+	            		}
+            		}
+            	}
             	else if(command.replaceAll("[^a-zA-Z]","").toLowerCase().equals("log") && diceRolled) {
             		ui.displayString(players.get(playerCounter).getLog().toString());
             	}
@@ -246,6 +304,14 @@ public class Cluedo {
                 if(rolls == 0 && diceRolled) break;
         	}while(true);
         playerCounter = (playerCounter + 1) % players.getPlayerNum(); //moves onto the next player
+        if(!players.get(playerCounter).isPlaying()){
+        	 playerCounter = (playerCounter + 1) % players.getPlayerNum();
+        }
+        if(playablePlayers == 1){ // if there is 1 player left
+        	ui.displayString(players.get(playerCounter).getName() + " has won the game!, Press enter to exit");
+			ui.getCommand();
+			command = "quit";
+        }
         } while (!command.equals("quit"));
     }
 
