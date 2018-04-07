@@ -25,7 +25,7 @@ public class Cluedo {
         String command;
         int playerCounter = players.shufflePlayers(dice); // keeps track of which players is making moves
         ui.displayString("\nDice rolled. Player number " + (playerCounter+1) + " will start the game.");
-        ui.displayString("\nCommands:\nquit - exit the game\nroll - roll the dice\nmove - move the player\nleave - leave the room\npassage - use the passage\ncards - display your cards\nnotes - display your notes\nask - Ask a question.\npass - pass your turn\ncheat - show the envelope\ncommands - display a list of commands\n");
+		ui.displayString("\nCommands:\nquit - exit the game\nroll - roll the dice\nmove - move the player\nleave - leave the room\npassage - use the passage\ncards - display your cards\nnotes - display your notes\nask - Ask a question.\npass - pass your turn\ncheat - show the envelope\n");
         do {
             Boolean diceRolled = false;
             int rolls = 0;
@@ -46,19 +46,69 @@ public class Cluedo {
             		else rolls--;
             		ui.displayString("You have "+ rolls +" moves remaining.");
             	}
-            	else if(command.replaceAll("[^a-zA-Z]","").toLowerCase().equals("move") && diceRolled) {
-            		ui.displayString("Enter the direction.");
-                	command = ui.getCommand();
-                	int choice = 4;
-                	choice = mover.move(playerCounter, command);
-                	if(choice == 0) {
-                		rolls--;
-                		ui.displayString("You have "+ rolls + " moves remaining.");
-                	}
-                	if(choice == 1) ui.displayString("You cannot move here.");
-                	if(choice == 3) {
-                		rolls = 0;
-                	}
+            	else if(command.replaceAll("[^a-zA-Z]","").toLowerCase().startsWith("move") && diceRolled) {
+            		if(command.replaceAll("[^a-zA-Z]","").toLowerCase().endsWith("l") || command.replaceAll("[^a-zA-Z]","").toLowerCase().endsWith("left")) {
+                    	int choice = 4;
+                    	choice = mover.move(playerCounter, "left");
+                    	if(choice == 0) {
+                    		rolls--;
+                    		ui.displayString("You have "+ rolls + " moves remaining.");
+                    	}
+                    	if(choice == 1) ui.displayString("You cannot move here.");
+                    	if(choice == 3) {
+                    		rolls = 0;
+                    	}
+            		}
+            		else if(command.replaceAll("[^a-zA-Z]","").toLowerCase().endsWith("r") || command.replaceAll("[^a-zA-Z]","").toLowerCase().endsWith("right")) {
+            			int choice = 4;
+                    	choice = mover.move(playerCounter, "right");
+                    	if(choice == 0) {
+                    		rolls--;
+                    		ui.displayString("You have "+ rolls + " moves remaining.");
+                    	}
+                    	if(choice == 1) ui.displayString("You cannot move here.");
+                    	if(choice == 3) {
+                    		rolls = 0;
+                    	}
+            		}
+            		else if(command.replaceAll("[^a-zA-Z]","").toLowerCase().endsWith("u") || command.replaceAll("[^a-zA-Z]","").toLowerCase().endsWith("up")) {
+            			int choice = 4;
+                    	choice = mover.move(playerCounter, "up");
+                    	if(choice == 0) {
+                    		rolls--;
+                    		ui.displayString("You have "+ rolls + " moves remaining.");
+                    	}
+                    	if(choice == 1) ui.displayString("You cannot move here.");
+                    	if(choice == 3) {
+                    		rolls = 0;
+                    	}
+            		}
+            		else if(command.replaceAll("[^a-zA-Z]","").toLowerCase().endsWith("d") || command.replaceAll("[^a-zA-Z]","").toLowerCase().endsWith("down")) {
+            			int choice = 4;
+                    	choice = mover.move(playerCounter, "down");
+                    	if(choice == 0) {
+                    		rolls--;
+                    		ui.displayString("You have "+ rolls + " moves remaining.");
+                    	}
+                    	if(choice == 1) ui.displayString("You cannot move here.");
+                    	if(choice == 3) {
+                    		rolls = 0;
+                    	}
+            		}
+            		else {
+            			ui.displayString("Enter the direction.");
+                    	command = ui.getCommand();
+                    	int choice = 4;
+                    	choice = mover.move(playerCounter, command);
+                    	if(choice == 0) {
+                    		rolls--;
+                    		ui.displayString("You have "+ rolls + " moves remaining.");
+                    	}
+                    	if(choice == 1) ui.displayString("You cannot move here.");
+                    	if(choice == 3) {
+                    		rolls = 0;
+                    	}
+            		}
             	}
             	else if(command.replaceAll("[^a-zA-Z]","").toLowerCase().equals("passage") && diceRolled) {
             		if(players.get(playerCounter).getOccupiedRoom()==null) ui.displayString("You are not currently in a room.");
