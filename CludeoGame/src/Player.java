@@ -14,7 +14,8 @@ public class Player {
 	private Room occupiedRoom;		// The room th eplayer is in
 	private Cards playersCards;		// The players deck of cards
 	private Notes notes;			// The players notes
-	
+	private Logbook log;			// Player Logbook
+
 	public Player(int id, String name, Token character, Coordinates pos) {
 		this.id = id;
 		this.name = name;
@@ -24,6 +25,7 @@ public class Player {
 		occupiedRoom = null;
 		playersCards = new Cards();
 		notes = new Notes();
+		log = new Logbook();
 	}
 	
 	public int getID() {
@@ -56,6 +58,10 @@ public class Player {
     public Notes getNotes(){
     	return notes;
     }
+    
+	public Logbook getLog() {
+		return log;
+	}
 	
 	public void setPos(Coordinates pos) {
 		this.pos = pos;
@@ -73,7 +79,7 @@ public class Player {
     	occupiedRoom = room;
     }
     
-    public void askPlayer(Player player, String suspect, String weapon, String room) {
+    public int askPlayer(Player player, String suspect, String weapon, String room, Logbook askingLog, Logbook askedLog) {
     	
 
     	ArrayList<String> info = new ArrayList<>();
@@ -87,10 +93,15 @@ public class Player {
     	
     	if(info.isEmpty()) {
     		JOptionPane.showMessageDialog(null, player.getName() + " has no cards that you are asking for.");
+    		return 1;
     	}
     	else if(info.size() == 1) {
     		this.notes.recordNote(info.get(0), "X");
     		JOptionPane.showMessageDialog(null, this.name + "'s notes have been updated!");
+    		this.getLog().addAnswer(player.getName(), info.get(0));
+    		player.getLog().addReveal(this.name, info.get(0));
+    		
+    		return 0;
     	}
     	else if(info.size() > 1) {
     		JOptionPane.showMessageDialog(null, "Pass game over to " + player.getName());
@@ -106,6 +117,8 @@ public class Player {
 						}
 						else {
 							this.notes.recordNote(info.get(choice - 1), "X");
+			        		this.getLog().addAnswer(player.getName(), info.get(choice - 1));
+			        		player.getLog().addReveal(this.name, info.get(choice - 1));
 						}
 					} catch (NumberFormatException e) {
 						JOptionPane.showMessageDialog(null, "Enter valid number");
@@ -113,6 +126,8 @@ public class Player {
     			}
     			
         		JOptionPane.showMessageDialog(null, this.name + "'s notes have been updated!");
+        		
+        		return 0;
     			
     		}
     		else if(info.size() == 3) {
@@ -127,6 +142,8 @@ public class Player {
 						}
 						else {
 							this.notes.recordNote(info.get(choice - 1), "X");
+			        		this.getLog().addAnswer(player.getName(), info.get(choice - 1));
+			        		player.getLog().addReveal(this.name, info.get(choice - 1));
 						}
 					} catch (NumberFormatException e) {
 						JOptionPane.showMessageDialog(null, "Enter valid number");
@@ -135,7 +152,10 @@ public class Player {
     			
         		JOptionPane.showMessageDialog(null, this.name + "'s notes have been updated!");
         		
+        		return 0;
+        		
     		}
     	}
+		return 1;    	
     }
 }

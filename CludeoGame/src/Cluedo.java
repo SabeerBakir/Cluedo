@@ -25,7 +25,7 @@ public class Cluedo {
         String command;
         int playerCounter = players.shufflePlayers(dice); // keeps track of which players is making moves
         ui.displayString("\nDice rolled. Player number " + (playerCounter+1) + " will start the game.");
-		ui.displayString("\nCommands:\nquit - exit the game\nroll - roll the dice\nmove - move the player\nleave - leave the room\npassage - use the passage\ncards - display your cards\nnotes - display your notes\nask - Ask a question.\npass - pass your turn\ncheat - show the envelope\n");
+		ui.displayString("\nCommands:\nquit - exit the game\nroll - roll the dice\nmove - move the player\nleave - leave the room\npassage - use the passage\ncards - display your cards\nnotes - display your notes\nask - Ask a question.\nlog - Display log of questions and answers.\npass - pass your turn\ncheat - show the envelope\n");
         do {
             Boolean diceRolled = false;
             int rolls = 0;
@@ -123,7 +123,7 @@ public class Cluedo {
             		}
             	}
             	else if(command.replaceAll("[^a-zA-Z]","").toLowerCase().equals("commands")) {
-            		ui.displayString("\nCommands:\nquit - exit the game\nroll - roll the dice\nmove - move the player\nleave - leave the room\npassage - use the passage\ncards - display your cards\nnotes - display your notes\nask - Ask a question.\npass - pass your turn\ncheat - show the envelope\n");
+            		ui.displayString("\nCommands:\nquit - exit the game\nroll - roll the dice\nmove - move the player\nleave - leave the room\npassage - use the passage\ncards - display your cards\nnotes - display your notes\nask - Ask a question.\nlog - Display log of questions and answers.\npass - pass your turn\ncheat - show the envelope\n");
             	}
             	else if(command.replaceAll("[^a-zA-Z]","").toLowerCase().equals("cards")) {
             		JFrame cardFrame = new JFrame("Your Cards");
@@ -157,75 +157,74 @@ public class Cluedo {
             		cheatFrame.setVisible(true);
             	}
             	else if(command.replaceAll("[^a-zA-Z]","").toLowerCase().equals("ask") && diceRolled) {
-            		int askedPlayer = Math.abs((playerCounter - 1) % players.getPlayerNum()); // player to the left
-            		int i = 0; // counter for how many players asked
-            		
-            		// COME BACK AND FIX THIS SHIT
-            		String suspectQuestion = null;
-            		String weaponQuestion = null;
-            		String roomQuestion = null;
-            		
-            		ui.displayString("You are asking a question");
-            		ui.displayString("Suspect: ");
-            		command = ui.getCommand();
-            		ui.displayString(command);
-            		
-            		while(suspectQuestion == null){
-            			if(tokens.get(command) == null){
-            				suspectQuestion = null;
-            			}
-            			else{
-            				suspectQuestion = tokens.get(command).toString();
-            			}
-            			if(suspectQuestion == null){
-            				ui.displayString("Enter Valid Suspect: ");
-                    		command = ui.getCommand();
-                    		ui.displayString(command);
-            			}
+            		if(players.get(playerCounter).getOccupiedRoom() == null){
+            			ui.displayString("You are currently not in a room.");
             		}
-            		
-            		ui.displayString("Weapon: ");
-            		command = ui.getCommand();
-            		ui.displayString(command);
-            		while(weaponQuestion == null){
-            			if(weapons.get(command) == null){
-            				weaponQuestion = null;
-            			}
-            			else{
-            				weaponQuestion = weapons.get(command).toString();
-            			}
-            			if(weaponQuestion == null){
-            				ui.displayString("Enter Valid Weapon: ");
-                    		command = ui.getCommand();
-                    		ui.displayString(command);
-            			}
+            		else{
+	            		int askedPlayer = Math.abs((playerCounter - 1) % players.getPlayerNum()); // player to the left
+	            		int i = 0; // counter for how many players asked
+	            		
+	            		// COME BACK AND FIX THIS SHIT
+	            		String suspectQuestion = null;
+	            		String weaponQuestion = null;
+	            		String roomQuestion = players.get(playerCounter).getRoom();
+	            		
+	            		ui.displayString("You are asking a question");
+	            		ui.displayString("Suspect: ");
+	            		command = ui.getCommand();
+	            		ui.displayString(command);
+	            		
+	            		while(suspectQuestion == null){
+	            			if(tokens.get(command) == null){
+	            				suspectQuestion = null;
+	            			}
+	            			else{
+	            				suspectQuestion = tokens.get(command).toString();
+	            			}
+	            			if(suspectQuestion == null){
+	            				ui.displayString("Enter Valid Suspect: ");
+	                    		command = ui.getCommand();
+	                    		ui.displayString(command);
+	            			}
+	            		}
+	            		
+	            		ui.displayString("Weapon: ");
+	            		command = ui.getCommand();
+	            		ui.displayString(command);
+	            		while(weaponQuestion == null){
+	            			if(weapons.get(command) == null){
+	            				weaponQuestion = null;
+	            			}
+	            			else{
+	            				weaponQuestion = weapons.get(command).toString();
+	            			}
+	            			if(weaponQuestion == null){
+	            				ui.displayString("Enter Valid Weapon: ");
+	                    		command = ui.getCommand();
+	                    		ui.displayString(command);
+	            			}
+	            		}
+	            		
+	            		while(i < players.getPlayerNum() - 1) {
+	            			for(Player player : players){
+	            				player.getLog().addQuestion(suspectQuestion, weaponQuestion, roomQuestion);
+	            			}
+	            			if(players.get(playerCounter).askPlayer(players.get(askedPlayer), suspectQuestion, weaponQuestion, roomQuestion, players.get(playerCounter).getLog(), players.get(askedPlayer).getLog()) == 0){
+	            				break;
+	            			}
+	            			i++;
+	            			askedPlayer = Math.abs((askedPlayer - 1) % players.getPlayerNum()); // move to the next player
+	            		}
+	            		if(i == (players.getPlayerNum())) { // If no players have a card that was asked
+	            			ui.displayString("No player has a card that you have asked for.");
+	            			for(Player player : players){
+	            				player.getLog().add("No player revealed cards, " + suspectQuestion + ", " + weaponQuestion + ", " + roomQuestion);
+	            			}
+	            		}
             		}
-            		
-            		ui.displayString("Room: ");
-            		command = ui.getCommand();
-            		ui.displayString(command);
-            		while(roomQuestion == null){
-            			if(rooms.get(command) == null){
-            				roomQuestion = null;
-            			}
-            			else{
-            				roomQuestion = rooms.get(command).toString();
-            			}
-            			if(roomQuestion == null){
-            				ui.displayString("Enter Valid Room: ");
-                    		command = ui.getCommand();
-                    		ui.displayString(command);
-            			}
-            		}
-            		
-            		while(i < players.getPlayerNum() - 1) {
-            			players.get(playerCounter).askPlayer(players.get(askedPlayer), suspectQuestion, weaponQuestion, roomQuestion);
-            			i++;
-            			askedPlayer = Math.abs((askedPlayer - 1) % players.getPlayerNum()); // move to the next player
-            		}
-            		if(i == (players.getPlayerNum() - 1)) { // If no players have a card that was asked
-            			ui.displayString("No player has a card that you have asked for.");
-            		}
+            	}
+            	else if(command.replaceAll("[^a-zA-Z]","").toLowerCase().equals("log") && diceRolled) {
+            		ui.displayString(players.get(playerCounter).getLog().toString());
             	}
             	else if(command.replaceAll("[^a-zA-Z]","").toLowerCase().startsWith("help")) {
             		if(command.replaceAll("[^a-zA-Z]","").toLowerCase().endsWith("help")) ui.displayString("Help - Show help for commands.\n");
@@ -237,6 +236,7 @@ public class Cluedo {
             		if(command.replaceAll("[^a-zA-Z]","").toLowerCase().endsWith("cards")) ui.displayString("Cards - Show your current cards.\n");
             		if(command.replaceAll("[^a-zA-Z]","").toLowerCase().endsWith("notes")) ui.displayString("Notes - Show known card information.\n");
             		if(command.replaceAll("[^a-zA-Z]","").toLowerCase().endsWith("ask")) ui.displayString("Ask - Ask a question.\n");
+            		if(command.replaceAll("[^a-zA-Z]","").toLowerCase().endsWith("log")) ui.displayString("Log - Display log of questions and answers.\n");
             		if(command.replaceAll("[^a-zA-Z]","").toLowerCase().endsWith("pass")) ui.displayString("Pass - Pass your turn.\n");
             		if(command.replaceAll("[^a-zA-Z]","").toLowerCase().endsWith("cheat")) ui.displayString("Cheat - Show the murder envelope.\n");
             		if(command.replaceAll("[^a-zA-Z]","").toLowerCase().endsWith("commands")) ui.displayString("Commands - Show a list of all commands.\n");
