@@ -223,13 +223,13 @@ public class Cluedo {
             		}
             	}
             	else if(command.replaceAll("[^a-zA-Z]","").toLowerCase().equals("accuse") && diceRolled) {
-            		if(players.get(playerCounter).getOccupiedRoom() == null){
-            			ui.displayString("You are currently not in a room.");
+            		if(players.get(playerCounter).getOccupiedRoom().getName() != "Basement"){
+            			ui.displayString("You are currently not in the basement.");
             		}
             		else{
 	            		String suspectQuestion = null;
 	            		String weaponQuestion = null;
-	            		String roomQuestion = players.get(playerCounter).getRoom();
+	            		String roomQuestion = null;
 	            		
 	            		ui.displayString("You are accusing: ");
 	            		ui.displayString("Suspect: ");
@@ -266,6 +266,24 @@ public class Cluedo {
 	                    		ui.displayString(command);
 	            			}
 	            		}
+	            		
+	            		ui.displayString("Room: ");
+	            		command = ui.getCommand();
+	            		ui.displayString(command);
+	            		while(roomQuestion == null){
+	            			if(rooms.get(command) == null){
+	            				roomQuestion = null;
+	            			}
+	            			else{
+	            				roomQuestion = rooms.get(command).toString();
+	            			}
+	            			if(roomQuestion == null){
+	            				ui.displayString("Enter Valid Room: ");
+	                    		command = ui.getCommand();
+	                    		ui.displayString(command);
+	            			}
+	            		}
+	            		
 	            		
 	            		// WIN CONDITION
 	            		if(suspectQuestion == envelope.getList().get(1).getCardName() && weaponQuestion ==  envelope.getList().get(0).getCardName() && roomQuestion == envelope.getList().get(2).getCardName()){
