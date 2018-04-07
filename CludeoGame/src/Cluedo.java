@@ -34,10 +34,13 @@ public class Cluedo {
             	command = ui.getCommand();
             	ui.displayString(command);
             	if(command.replaceAll("[^a-zA-Z]","").toLowerCase().equals("quit")) System.exit(0);
-            	if(command.replaceAll("[^a-zA-Z]","").toLowerCase().equals("roll") && !diceRolled) {
+            	else if(command.replaceAll("[^a-zA-Z]","").toLowerCase().equals("roll") && !diceRolled) {
             		rolls = dice.roll();
             		diceRolled = true;
             		ui.displayString("Your roll: "+rolls);
+            	}
+            	else if(command.replaceAll("[^a-zA-Z]","").toLowerCase().equals("roll") && diceRolled) {
+            		ui.displayString("You have already rolled this turn! Your roll: "+rolls);
             	}
             	else if(command.replaceAll("[^a-zA-Z]","").toLowerCase().equals("leave") && diceRolled) {
             		if(mover.exitRoom(playerCounter, players.get(playerCounter).getOccupiedRoom()) != 0) {
