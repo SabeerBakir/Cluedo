@@ -342,7 +342,7 @@ public class Cluedo {
     			command = "quit";
     		}
     		else{
-    			ui.displayString(players.get(playerCounter).getName() + " made an incorrect accusation is unable to ask or move or roll or accuse again");
+    			ui.displayString(players.get(playerCounter).getName() + " made an incorrect accusation and is unable to ask or move or roll or accuse again");
     			players.get(playerCounter).setPlaying(false);
     			rolls = 0;
     			playablePlayers--;	            			
