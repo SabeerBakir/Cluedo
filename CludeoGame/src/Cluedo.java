@@ -61,6 +61,21 @@ public class Cluedo {
                     	if(choice == 1) ui.displayString("You cannot move here.");
                     	if(choice == 3) {
                     		rolls = 0;
+                    		ui.display();
+                    		if(players.get(playerCounter).getRoom().equals("Basement")) {
+                    			ui.displayString("You can now accuse a player.");
+                    			command = ui.getCommand();
+                    			if(command.replaceAll("[^a-zA-Z]", "").toLowerCase().equals("accuse")) {
+                    				accusePlayer(players, playerCounter, ui, command, tokens, weapons, rooms, envelope, rolls, playablePlayers);
+                    			}
+                    		}
+                    		else {
+                        		ui.displayString("You can now ask a question.");
+                        		command = ui.getCommand();
+                        		if(command.replaceAll("[^a-zA-Z]", "").toLowerCase().equals("ask")) {
+                        			askQuestion(players, playerCounter, ui, command, tokens, weapons);
+                        		}
+                    		}
                     	}
             		}
             		else if(command.replaceAll("[^a-zA-Z]","").toLowerCase().endsWith("r") || command.replaceAll("[^a-zA-Z]","").toLowerCase().endsWith("right")) {
@@ -73,6 +88,21 @@ public class Cluedo {
                     	if(choice == 1) ui.displayString("You cannot move here.");
                     	if(choice == 3) {
                     		rolls = 0;
+                    		ui.display();
+                    		if(players.get(playerCounter).getRoom().equals("Basement")) {
+                    			ui.displayString("You can now accuse a player.");
+                    			command = ui.getCommand();
+                    			if(command.replaceAll("[^a-zA-Z]", "").toLowerCase().equals("accuse")) {
+                    				accusePlayer(players, playerCounter, ui, command, tokens, weapons, rooms, envelope, rolls, playablePlayers);
+                    			}
+                    		}
+                    		else {
+                        		ui.displayString("You can now ask a question.");
+                        		command = ui.getCommand();
+                        		if(command.replaceAll("[^a-zA-Z]", "").toLowerCase().equals("ask")) {
+                        			askQuestion(players, playerCounter, ui, command, tokens, weapons);
+                        		}
+                    		}
                     	}
             		}
             		else if(command.replaceAll("[^a-zA-Z]","").toLowerCase().endsWith("u") || command.replaceAll("[^a-zA-Z]","").toLowerCase().endsWith("up")) {
@@ -85,6 +115,21 @@ public class Cluedo {
                     	if(choice == 1) ui.displayString("You cannot move here.");
                     	if(choice == 3) {
                     		rolls = 0;
+                    		ui.display();
+                    		if(players.get(playerCounter).getRoom().equals("Basement")) {
+                    			ui.displayString("You can now accuse a player.");
+                    			command = ui.getCommand();
+                    			if(command.replaceAll("[^a-zA-Z]", "").toLowerCase().equals("accuse")) {
+                    				accusePlayer(players, playerCounter, ui, command, tokens, weapons, rooms, envelope, rolls, playablePlayers);
+                    			}
+                    		}
+                    		else {
+                        		ui.displayString("You can now ask a question.");
+                        		command = ui.getCommand();
+                        		if(command.replaceAll("[^a-zA-Z]", "").toLowerCase().equals("ask")) {
+                        			askQuestion(players, playerCounter, ui, command, tokens, weapons);
+                        		}
+                    		}
                     	}
             		}
             		else if(command.replaceAll("[^a-zA-Z]","").toLowerCase().endsWith("d") || command.replaceAll("[^a-zA-Z]","").toLowerCase().endsWith("down")) {
@@ -97,6 +142,21 @@ public class Cluedo {
                     	if(choice == 1) ui.displayString("You cannot move here.");
                     	if(choice == 3) {
                     		rolls = 0;
+                    		ui.display();
+                    		if(players.get(playerCounter).getRoom().equals("Basement")) {
+                    			ui.displayString("You can now accuse a player.");
+                    			command = ui.getCommand();
+                    			if(command.replaceAll("[^a-zA-Z]", "").toLowerCase().equals("accuse")) {
+                    				accusePlayer(players, playerCounter, ui, command, tokens, weapons, rooms, envelope, rolls, playablePlayers);
+                    			}
+                    		}
+                    		else {
+                        		ui.displayString("You can now ask a question.");
+                        		command = ui.getCommand();
+                        		if(command.replaceAll("[^a-zA-Z]", "").toLowerCase().equals("ask")) {
+                        			askQuestion(players, playerCounter, ui, command, tokens, weapons);
+                        		}
+                    		}
                     	}
             		}
             		else {
@@ -111,6 +171,21 @@ public class Cluedo {
                     	if(choice == 1) ui.displayString("You cannot move here.");
                     	if(choice == 3) {
                     		rolls = 0;
+                    		ui.display();
+                    		if(players.get(playerCounter).getRoom().equals("Basement")) {
+                    			ui.displayString("You can now accuse a player.");
+                    			command = ui.getCommand();
+                    			if(command.replaceAll("[^a-zA-Z]", "").toLowerCase().equals("accuse")) {
+                    				accusePlayer(players, playerCounter, ui, command, tokens, weapons, rooms, envelope, rolls, playablePlayers);
+                    			}
+                    		}
+                    		else {
+                        		ui.displayString("You can now ask a question.");
+                        		command = ui.getCommand();
+                        		if(command.replaceAll("[^a-zA-Z]", "").toLowerCase().equals("ask")) {
+                        			askQuestion(players, playerCounter, ui, command, tokens, weapons);
+                        		}
+                    		}
                     	}
             		}
             	}
@@ -158,146 +233,10 @@ public class Cluedo {
             		cheatFrame.setVisible(true);
             	}
             	else if(command.replaceAll("[^a-zA-Z]","").toLowerCase().equals("ask") && diceRolled) {
-            		if(players.get(playerCounter).getOccupiedRoom() == null){
-            			ui.displayString("You are currently not in a room.");
-            		}
-            		else{
-	            		int askedPlayer = Math.abs((playerCounter - 1) % players.getPlayerNum()); // player to the left
-	            		int i = 0; // counter for how many players asked
-	            		String suspectQuestion = null;
-	            		String weaponQuestion = null;
-	            		String roomQuestion = players.get(playerCounter).getRoom();
-	            		
-	            		ui.displayString("You are asking a question");
-	            		ui.displayString("Suspect: ");
-	            		command = ui.getCommand();
-	            		ui.displayString(command);
-	            		
-	            		while(suspectQuestion == null){
-	            			if(tokens.get(command) == null){
-	            				suspectQuestion = null;
-	            			}
-	            			else{
-	            				suspectQuestion = tokens.get(command).toString();
-	            			}
-	            			if(suspectQuestion == null){
-	            				ui.displayString("Enter Valid Suspect: ");
-	                    		command = ui.getCommand();
-	                    		ui.displayString(command);
-	            			}
-	            		}
-	            		
-	            		ui.displayString("Weapon: ");
-	            		command = ui.getCommand();
-	            		ui.displayString(command);
-	            		while(weaponQuestion == null){
-	            			if(weapons.get(command) == null){
-	            				weaponQuestion = null;
-	            			}
-	            			else{
-	            				weaponQuestion = weapons.get(command).toString();
-	            			}
-	            			if(weaponQuestion == null){
-	            				ui.displayString("Enter Valid Weapon: ");
-	                    		command = ui.getCommand();
-	                    		ui.displayString(command);
-	            			}
-	            		}
-	            		
-	            		while(i < players.getPlayerNum() - 1) {
-	            			for(Player player : players){
-	            				player.getLog().addQuestion(suspectQuestion, weaponQuestion, roomQuestion);
-	            			}
-	            			if(players.get(playerCounter).askPlayer(players.get(askedPlayer), suspectQuestion, weaponQuestion, roomQuestion, players.get(playerCounter).getLog(), players.get(askedPlayer).getLog()) == 0){
-	            				break;
-	            			}
-	            			i++;
-	            			askedPlayer = Math.abs((askedPlayer - 1) % players.getPlayerNum()); // move to the next player
-	            		}
-	            		if(i == (players.getPlayerNum())) { // If no players have a card that was asked
-	            			ui.displayString("No player has a card that you have asked for.");
-	            			for(Player player : players){
-	            				player.getLog().add("No player revealed cards, " + suspectQuestion + ", " + weaponQuestion + ", " + roomQuestion);
-	            			}
-	            		}
-            		}
+            		askQuestion(players, playerCounter, ui, command, tokens, weapons);
             	}
             	else if(command.replaceAll("[^a-zA-Z]","").toLowerCase().equals("accuse") && diceRolled) {
-            		if(players.get(playerCounter).getOccupiedRoom().getName() != "Basement"){
-            			ui.displayString("You are currently not in the basement.");
-            		}
-            		else{
-	            		String suspectQuestion = null;
-	            		String weaponQuestion = null;
-	            		String roomQuestion = null;
-	            		
-	            		ui.displayString("You are accusing: ");
-	            		ui.displayString("Suspect: ");
-	            		command = ui.getCommand();
-	            		ui.displayString(command);
-	            		
-	            		while(suspectQuestion == null){
-	            			if(tokens.get(command) == null){
-	            				suspectQuestion = null;
-	            			}
-	            			else{
-	            				suspectQuestion = tokens.get(command).toString();
-	            			}
-	            			if(suspectQuestion == null){
-	            				ui.displayString("Enter Valid Suspect: ");
-	                    		command = ui.getCommand();
-	                    		ui.displayString(command);
-	            			}
-	            		}
-	            		
-	            		ui.displayString("Weapon: ");
-	            		command = ui.getCommand();
-	            		ui.displayString(command);
-	            		while(weaponQuestion == null){
-	            			if(weapons.get(command) == null){
-	            				weaponQuestion = null;
-	            			}
-	            			else{
-	            				weaponQuestion = weapons.get(command).toString();
-	            			}
-	            			if(weaponQuestion == null){
-	            				ui.displayString("Enter Valid Weapon: ");
-	                    		command = ui.getCommand();
-	                    		ui.displayString(command);
-	            			}
-	            		}
-	            		
-	            		ui.displayString("Room: ");
-	            		command = ui.getCommand();
-	            		ui.displayString(command);
-	            		while(roomQuestion == null){
-	            			if(rooms.get(command) == null){
-	            				roomQuestion = null;
-	            			}
-	            			else{
-	            				roomQuestion = rooms.get(command).toString();
-	            			}
-	            			if(roomQuestion == null){
-	            				ui.displayString("Enter Valid Room: ");
-	                    		command = ui.getCommand();
-	                    		ui.displayString(command);
-	            			}
-	            		}
-	            		
-	            		
-	            		// WIN CONDITION
-	            		if(suspectQuestion == envelope.getList().get(1).getCardName() && weaponQuestion ==  envelope.getList().get(0).getCardName() && roomQuestion == envelope.getList().get(2).getCardName()){
-	            			ui.displayString(players.get(playerCounter).getName() + " has won the game!, Press enter to exit");
-	            			ui.getCommand();
-	            			command = "quit";
-	            		}
-	            		else{
-	            			ui.displayString(players.get(playerCounter).getName() + " made an incorrect accusation is unable to ask or move or roll or accuse again");
-	            			players.get(playerCounter).setPlaying(false);
-	            			rolls = 0;
-	            			playablePlayers--;	            			
-	            		}
-            		}
+            		accusePlayer(players, playerCounter, ui, command, tokens, weapons, rooms, envelope, rolls, playablePlayers);
             	}
             	else if(command.replaceAll("[^a-zA-Z]","").toLowerCase().equals("log") && diceRolled) {
             		ui.displayString(players.get(playerCounter).getLog().toString());
@@ -331,6 +270,150 @@ public class Cluedo {
 			command = "quit";
         }
         } while (!command.equals("quit"));
+    }
+    
+    private static void accusePlayer(Players players, int playerCounter, UI ui, String command, Tokens tokens, Weapons weapons, Rooms rooms, Cards envelope, int rolls, int playablePlayers) {
+    	if(players.get(playerCounter).getOccupiedRoom().getName() != "Basement"){
+			ui.displayString("You are currently not in the basement.");
+		}
+		else{
+    		String suspectQuestion = null;
+    		String weaponQuestion = null;
+    		String roomQuestion = null;
+    		
+    		ui.displayString("You are accusing: ");
+    		ui.displayString("Suspect: ");
+    		command = ui.getCommand();
+    		ui.displayString(command);
+    		
+    		while(suspectQuestion == null){
+    			if(tokens.get(command) == null){
+    				suspectQuestion = null;
+    			}
+    			else{
+    				suspectQuestion = tokens.get(command).toString();
+    			}
+    			if(suspectQuestion == null){
+    				ui.displayString("Enter Valid Suspect: ");
+            		command = ui.getCommand();
+            		ui.displayString(command);
+    			}
+    		}
+    		
+    		ui.displayString("Weapon: ");
+    		command = ui.getCommand();
+    		ui.displayString(command);
+    		while(weaponQuestion == null){
+    			if(weapons.get(command) == null){
+    				weaponQuestion = null;
+    			}
+    			else{
+    				weaponQuestion = weapons.get(command).toString();
+    			}
+    			if(weaponQuestion == null){
+    				ui.displayString("Enter Valid Weapon: ");
+            		command = ui.getCommand();
+            		ui.displayString(command);
+    			}
+    		}
+    		
+    		ui.displayString("Room: ");
+    		command = ui.getCommand();
+    		ui.displayString(command);
+    		while(roomQuestion == null){
+    			if(rooms.get(command) == null){
+    				roomQuestion = null;
+    			}
+    			else{
+    				roomQuestion = rooms.get(command).toString();
+    			}
+    			if(roomQuestion == null){
+    				ui.displayString("Enter Valid Room: ");
+            		command = ui.getCommand();
+            		ui.displayString(command);
+    			}
+    		}
+    		
+    		
+    		// WIN CONDITION
+    		if(suspectQuestion == envelope.getList().get(1).getCardName() && weaponQuestion ==  envelope.getList().get(0).getCardName() && roomQuestion == envelope.getList().get(2).getCardName()){
+    			ui.displayString(players.get(playerCounter).getName() + " has won the game!, Press enter to exit");
+    			ui.getCommand();
+    			command = "quit";
+    		}
+    		else{
+    			ui.displayString(players.get(playerCounter).getName() + " made an incorrect accusation is unable to ask or move or roll or accuse again");
+    			players.get(playerCounter).setPlaying(false);
+    			rolls = 0;
+    			playablePlayers--;	            			
+    		}
+		}
+    }
+    
+    private static void askQuestion(Players players, int playerCounter, UI ui, String command, Tokens tokens, Weapons weapons) {
+    	if(players.get(playerCounter).getOccupiedRoom() == null){
+			ui.displayString("You are currently not in a room.");
+		}
+		else{
+    		int askedPlayer = Math.abs((playerCounter - 1) % players.getPlayerNum()); // player to the left
+    		int i = 0; // counter for how many players asked
+    		String suspectQuestion = null;
+    		String weaponQuestion = null;
+    		String roomQuestion = players.get(playerCounter).getRoom();
+    		
+    		ui.displayString("You are asking a question");
+    		ui.displayString("Suspect: ");
+    		command = ui.getCommand();
+    		ui.displayString(command);
+    		
+    		while(suspectQuestion == null){
+    			if(tokens.get(command) == null){
+    				suspectQuestion = null;
+    			}
+    			else{
+    				suspectQuestion = tokens.get(command).toString();
+    			}
+    			if(suspectQuestion == null){
+    				ui.displayString("Enter Valid Suspect: ");
+            		command = ui.getCommand();
+            		ui.displayString(command);
+    			}
+    		}
+    		
+    		ui.displayString("Weapon: ");
+    		command = ui.getCommand();
+    		ui.displayString(command);
+    		while(weaponQuestion == null){
+    			if(weapons.get(command) == null){
+    				weaponQuestion = null;
+    			}
+    			else{
+    				weaponQuestion = weapons.get(command).toString();
+    			}
+    			if(weaponQuestion == null){
+    				ui.displayString("Enter Valid Weapon: ");
+            		command = ui.getCommand();
+            		ui.displayString(command);
+    			}
+    		}
+    		
+    		while(i < players.getPlayerNum() - 1) {
+    			for(Player player : players){
+    				player.getLog().addQuestion(suspectQuestion, weaponQuestion, roomQuestion);
+    			}
+    			if(players.get(playerCounter).askPlayer(players.get(askedPlayer), suspectQuestion, weaponQuestion, roomQuestion, players.get(playerCounter).getLog(), players.get(askedPlayer).getLog()) == 0){
+    				break;
+    			}
+    			i++;
+    			askedPlayer = Math.abs((askedPlayer - 1) % players.getPlayerNum()); // move to the next player
+    		}
+    		if(i == (players.getPlayerNum())) { // If no players have a card that was asked
+    			ui.displayString("No player has a card that you have asked for.");
+    			for(Player player : players){
+    				player.getLog().add("No player revealed cards, " + suspectQuestion + ", " + weaponQuestion + ", " + roomQuestion);
+    			}
+    		}
+		}
     }
 
     public static void main(String[] args) {
