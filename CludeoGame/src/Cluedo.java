@@ -28,8 +28,10 @@ public class Cluedo {
         ui.displayString("\nDice rolled. Player number " + (playerCounter+1) + " will start the game.");
 		ui.displayString("\nCommands:\nquit - exit the game\nroll - roll the dice\nmove - move the player\nleave - leave the room\npassage - use the passage\ncards - display your cards\nnotes - display your notes\nask - Ask a question.\nlog - Display log of questions and answers.\npass - pass your turn\ncheat - show the envelope\n");
         do {
+        	ui.clear(); // clear the infoPanel so other players can't see your info
             Boolean diceRolled = false;
             int rolls = 0;
+            ui.displayString("Player " + players.get(playerCounter).getName() + "'s turn, type commands for a list of commands.\n");
         	do {
             	ui.displayString("[" + players.get(playerCounter).getName() + "] Enter Command: ");
             	command = ui.getCommand();
@@ -49,6 +51,7 @@ public class Cluedo {
             		}
             		else rolls--;
             		ui.displayString("You have "+ rolls +" moves remaining.");
+            		players.get(playerCounter).setAsked(false); // prevent asking multiple questions in a room without leaving
             	}
             	else if(command.replaceAll("[^a-zA-Z]","").toLowerCase().startsWith("move") && diceRolled) {
             		if(command.replaceAll("[^a-zA-Z]","").toLowerCase().endsWith("l") || command.replaceAll("[^a-zA-Z]","").toLowerCase().endsWith("left")) {
@@ -258,7 +261,11 @@ public class Cluedo {
             	}
             	if(!diceRolled) ui.displayString("You must roll first.");
                 ui.display();
-                if(rolls == 0 && diceRolled) break;
+                if(rolls == 0 && diceRolled) {
+                	ui.displayString("\nYour turn is over, press Enter to finish.");
+                	ui.getCommand();
+                	break;
+                }
         	}while(true);
         playerCounter = (playerCounter + 1) % players.getPlayerNum(); //moves onto the next player
         if(!players.get(playerCounter).isPlaying()){
@@ -268,7 +275,7 @@ public class Cluedo {
         	ui.displayString(players.get(playerCounter).getName() + " has won the game!, Press enter to exit");
 			ui.getCommand();
 			command = "quit";
-        }
+       		}	
         } while (!command.equals("quit"));
     }
     
@@ -337,15 +344,49 @@ public class Cluedo {
     		
     		// WIN CONDITION
     		if(suspectQuestion == envelope.getList().get(1).getCardName() && weaponQuestion ==  envelope.getList().get(0).getCardName() && roomQuestion == envelope.getList().get(2).getCardName()){
-    			ui.displayString(players.get(playerCounter).getName() + " has won the game!, Press enter to exit");
+    			ui.displayString("Congratulations, " + players.get(playerCounter).getName() + " has won the game! Press enter to exit.");
     			ui.getCommand();
-    			command = "quit";
+    			System.exit(0);
     		}
     		else{
     			ui.displayString(players.get(playerCounter).getName() + " made an incorrect accusation and is unable to ask or move or roll or accuse again");
     			players.get(playerCounter).setPlaying(false);
     			rolls = 0;
-    			playablePlayers--;	            			
+    			playablePlayers--;	   
+    			
+    			players.get(playerCounter).setOccupiedRoom(null); // move the player back to their starting location if they accuse incorrectly.
+    			players.get(playerCounter).setRoom(null);
+    			
+    			if(players.get(playerCounter).getCharacter().getName().equals("Plum")) {
+    				Coordinates start = new Coordinates(23, 19);
+    				players.get(playerCounter).setPos(start);
+    				players.get(playerCounter).getCharacter().setPosition(start);
+    			}
+    			else if(players.get(playerCounter).getCharacter().getName().equals("White")) {
+    				Coordinates start = new Coordinates(9, 0);
+    				players.get(playerCounter).setPos(start);
+    				players.get(playerCounter).getCharacter().setPosition(start);
+    			}
+    			else if(players.get(playerCounter).getCharacter().getName().equals("Scarlet")) {
+    				Coordinates start = new Coordinates(7, 24);
+    				players.get(playerCounter).setPos(start);
+    				players.get(playerCounter).getCharacter().setPosition(start);
+    			}
+    			else if(players.get(playerCounter).getCharacter().getName().equals("Green")) {
+    				Coordinates start = new Coordinates(14, 0);
+    				players.get(playerCounter).setPos(start);
+    				players.get(playerCounter).getCharacter().setPosition(start);
+    			}
+    			else if(players.get(playerCounter).getCharacter().getName().equals("Mustard")) {
+    				Coordinates start = new Coordinates(0, 17);
+    				players.get(playerCounter).setPos(start);
+    				players.get(playerCounter).getCharacter().setPosition(start);
+    			}
+    			else if(players.get(playerCounter).getCharacter().getName().equals("Peacock")) {
+    				Coordinates start = new Coordinates(23, 6);
+    				players.get(playerCounter).setPos(start);
+    				players.get(playerCounter).getCharacter().setPosition(start);
+    			}
     		}
 		}
     }
@@ -354,12 +395,22 @@ public class Cluedo {
     	if(players.get(playerCounter).getOccupiedRoom() == null){
 			ui.displayString("You are currently not in a room.");
 		}
+    	else if(players.get(playerCounter).asked() == true) {
+    		ui.displayString("You can't ask another question in this room, you must leave first.");
+    	}
 		else{
+			players.get(playerCounter).setAsked(true);
     		int askedPlayer = Math.abs((playerCounter - 1) % players.getPlayerNum()); // player to the left
     		int i = 0; // counter for how many players asked
     		String suspectQuestion = null;
     		String weaponQuestion = null;
     		String roomQuestion = players.get(playerCounter).getRoom();
+    		
+    		Coordinates weaponInRoom = new Coordinates(players.get(playerCounter).getCharacter().getPosition().getCol()-2, players.get(playerCounter).getCharacter().getPosition().getRow()); // Find positions to place the accused tokens
+    		Coordinates suspectInRoom = new Coordinates(players.get(playerCounter).getCharacter().getPosition().getCol()-2, players.get(playerCounter).getCharacter().getPosition().getRow()-1);
+    		
+    		Coordinates tempPosW = null;
+    		Coordinates tempPosS = null;
     		
     		ui.displayString("You are asking a question");
     		ui.displayString("Suspect: ");
@@ -379,6 +430,8 @@ public class Cluedo {
             		ui.displayString(command);
     			}
     		}
+			tempPosS = tokens.get(suspectQuestion).getPosition(); // hold the token's location and temporarily move them
+			tokens.get(suspectQuestion).setPosition(suspectInRoom);
     		
     		ui.displayString("Weapon: ");
     		command = ui.getCommand();
@@ -394,8 +447,14 @@ public class Cluedo {
     				ui.displayString("Enter Valid Weapon: ");
             		command = ui.getCommand();
             		ui.displayString(command);
-    			}
+    			}	
     		}
+    		tempPosW = weapons.get(weaponQuestion).getPosition();
+    		weapons.get(weaponQuestion).setPosition(weaponInRoom);
+    		
+    		ui.display(); // repaint the board to move the tokens
+    		ui.clear(); // clear the infoPanel to prevent other players from seeing your information
+    		ui.displayString("Player " + players.get(playerCounter).getName() + "'s turn, type commands for a list of commands.\n");
     		
     		while(i < players.getPlayerNum() - 1) {
     			for(Player player : players){
@@ -413,6 +472,8 @@ public class Cluedo {
     				player.getLog().add("No player revealed cards, " + suspectQuestion + ", " + weaponQuestion + ", " + roomQuestion);
     			}
     		}
+    		weapons.get(weaponQuestion).setPosition(tempPosW); // move the tokens back to where they should be
+    		tokens.get(suspectQuestion).setPosition(tempPosS);
 		}
     }
 

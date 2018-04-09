@@ -16,6 +16,7 @@ public class Player {
 	private Notes notes;			// The players notes
 	private Logbook log;			// Player Logbook
 	private boolean isPlaying;		// If the player is playing
+	private boolean askedQuestion;	// If the player asked a question that turn
 
 	public Player(int id, String name, Token character, Coordinates pos) {
 		this.id = id;
@@ -28,6 +29,7 @@ public class Player {
 		notes = new Notes();
 		log = new Logbook();
 		isPlaying = true;
+		askedQuestion = false;
 	}
 	
 	public int getID() {
@@ -69,6 +71,10 @@ public class Player {
 		return isPlaying;
 	}
 	
+	public boolean asked() {
+		return askedQuestion;
+	}
+	
 	public void setPos(Coordinates pos) {
 		this.pos = pos;
 	}
@@ -87,6 +93,10 @@ public class Player {
     
 	public void setPlaying(boolean isPlaying) {
 		this.isPlaying = isPlaying;
+	}
+	
+	public void setAsked(boolean askedQuestion) {
+		this.askedQuestion = askedQuestion;
 	}
     
     public int askPlayer(Player player, String suspect, String weapon, String room, Logbook askingLog, Logbook askedLog) {

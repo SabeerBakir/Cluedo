@@ -9,7 +9,7 @@ public class UI {
     private static final int FRAME_HEIGHT = 790;
 
     private final BoardPanel boardPanel;
-    private final InfoPanel infoPanel = new InfoPanel();
+    private InfoPanel infoPanel = new InfoPanel();
     private final CommandPanel commandPanel = new CommandPanel();
     
     // Make the appropriate panels
@@ -49,6 +49,14 @@ public class UI {
 
     public void displayString(String string) {
         infoPanel.addText(string);
+    }
+    
+    public void clear() {
+    	infoPanel.clear();
+    }
+    
+    public void repaintBoard() {
+    	boardPanel.repaint();
     }
         
 }
