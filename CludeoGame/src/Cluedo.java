@@ -29,9 +29,15 @@ public class Cluedo {
 		ui.displayString("\nCommands:\nquit - exit the game\nroll - roll the dice\nmove - move the player\nleave - leave the room\npassage - use the passage\ncards - display your cards\nnotes - display your notes\nask - Ask a question.\nlog - Display log of questions and answers.\npass - pass your turn\ncheat - show the envelope\n");
         do {
         	ui.clear(); // clear the infoPanel so other players can't see your info
+        	if(playablePlayers == 1){ // if there is 1 player left
+            	ui.displayString(players.get(playerCounter).getName() + " has won the game!, Press enter to exit");
+    			ui.getCommand();
+    			System.exit(0);
+           		}
             Boolean diceRolled = false;
             int rolls = 0;
-            ui.displayString("Player " + players.get(playerCounter).getName() + "'s turn, type commands for a list of commands.\n");
+            ui.displayString("Player " + players.get(playerCounter).getName() + "'s turn, type commands for a list of commands.");
+            ui.displayString("Type help followed by a command to get information on what the command does.\n");
         	do {
             	ui.displayString("[" + players.get(playerCounter).getName() + "] Enter Command: ");
             	command = ui.getCommand();
@@ -69,7 +75,7 @@ public class Cluedo {
                     			ui.displayString("You can now accuse a player.");
                     			command = ui.getCommand();
                     			if(command.replaceAll("[^a-zA-Z]", "").toLowerCase().equals("accuse")) {
-                    				accusePlayer(players, playerCounter, ui, command, tokens, weapons, rooms, envelope, rolls, playablePlayers);
+                    				playablePlayers = accusePlayer(players, playerCounter, ui, command, tokens, weapons, rooms, envelope, rolls, playablePlayers);
                     			}
                     		}
                     		else {
@@ -96,7 +102,7 @@ public class Cluedo {
                     			ui.displayString("You can now accuse a player.");
                     			command = ui.getCommand();
                     			if(command.replaceAll("[^a-zA-Z]", "").toLowerCase().equals("accuse")) {
-                    				accusePlayer(players, playerCounter, ui, command, tokens, weapons, rooms, envelope, rolls, playablePlayers);
+                    				playablePlayers = accusePlayer(players, playerCounter, ui, command, tokens, weapons, rooms, envelope, rolls, playablePlayers);
                     			}
                     		}
                     		else {
@@ -123,7 +129,7 @@ public class Cluedo {
                     			ui.displayString("You can now accuse a player.");
                     			command = ui.getCommand();
                     			if(command.replaceAll("[^a-zA-Z]", "").toLowerCase().equals("accuse")) {
-                    				accusePlayer(players, playerCounter, ui, command, tokens, weapons, rooms, envelope, rolls, playablePlayers);
+                    				playablePlayers = accusePlayer(players, playerCounter, ui, command, tokens, weapons, rooms, envelope, rolls, playablePlayers);
                     			}
                     		}
                     		else {
@@ -150,7 +156,7 @@ public class Cluedo {
                     			ui.displayString("You can now accuse a player.");
                     			command = ui.getCommand();
                     			if(command.replaceAll("[^a-zA-Z]", "").toLowerCase().equals("accuse")) {
-                    				accusePlayer(players, playerCounter, ui, command, tokens, weapons, rooms, envelope, rolls, playablePlayers);
+                    				playablePlayers = accusePlayer(players, playerCounter, ui, command, tokens, weapons, rooms, envelope, rolls, playablePlayers);
                     			}
                     		}
                     		else {
@@ -179,7 +185,7 @@ public class Cluedo {
                     			ui.displayString("You can now accuse a player.");
                     			command = ui.getCommand();
                     			if(command.replaceAll("[^a-zA-Z]", "").toLowerCase().equals("accuse")) {
-                    				accusePlayer(players, playerCounter, ui, command, tokens, weapons, rooms, envelope, rolls, playablePlayers);
+                    				playablePlayers = accusePlayer(players, playerCounter, ui, command, tokens, weapons, rooms, envelope, rolls, playablePlayers);
                     			}
                     		}
                     		else {
@@ -270,16 +276,12 @@ public class Cluedo {
         playerCounter = (playerCounter + 1) % players.getPlayerNum(); //moves onto the next player
         if(!players.get(playerCounter).isPlaying()){
         	 playerCounter = (playerCounter + 1) % players.getPlayerNum();
-        }
-        if(playablePlayers == 1){ // if there is 1 player left
-        	ui.displayString(players.get(playerCounter).getName() + " has won the game!, Press enter to exit");
-			ui.getCommand();
-			command = "quit";
-       		}	
+        	}
+        	
         } while (!command.equals("quit"));
     }
     
-    private static void accusePlayer(Players players, int playerCounter, UI ui, String command, Tokens tokens, Weapons weapons, Rooms rooms, Cards envelope, int rolls, int playablePlayers) {
+    private static int accusePlayer(Players players, int playerCounter, UI ui, String command, Tokens tokens, Weapons weapons, Rooms rooms, Cards envelope, int rolls, int playablePlayers) {
     	if(players.get(playerCounter).getOccupiedRoom().getName() != "Basement"){
 			ui.displayString("You are currently not in the basement.");
 		}
@@ -387,8 +389,10 @@ public class Cluedo {
     				players.get(playerCounter).setPos(start);
     				players.get(playerCounter).getCharacter().setPosition(start);
     			}
+    			return playablePlayers;
     		}
 		}
+		return playablePlayers;
     }
     
     private static void askQuestion(Players players, int playerCounter, UI ui, String command, Tokens tokens, Weapons weapons) {
