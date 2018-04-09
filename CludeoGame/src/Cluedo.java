@@ -30,13 +30,13 @@ public class Cluedo {
         do {
         	ui.clear(); // clear the infoPanel so other players can't see your info
         	if(playablePlayers == 1){ // if there is 1 player left
-            	ui.displayString(players.get(playerCounter).getName() + " has won the game!, Press enter to exit");
+            	ui.displayString("Congratulations! " + players.get(playerCounter).getName() + " has won the game!, Press enter to exit");
     			ui.getCommand();
     			System.exit(0);
            		}
             Boolean diceRolled = false;
             int rolls = 0;
-            ui.displayString("Player " + players.get(playerCounter).getName() + "'s turn, type commands for a list of commands.");
+            ui.displayString("Player " + players.get(playerCounter).getName() + "'s (" + players.get(playerCounter).getCharacter().getName() + ") turn, type commands for a list of commands.");
             ui.displayString("Type help followed by a command to get information on what the command does.\n");
         	do {
             	ui.displayString("[" + players.get(playerCounter).getName() + "] Enter Command: ");
@@ -476,6 +476,7 @@ public class Cluedo {
     				player.getLog().add("No player revealed cards, " + suspectQuestion + ", " + weaponQuestion + ", " + roomQuestion);
     			}
     		}
+    		ui.displayString(players.get(playerCounter).getNotes().toString());
     		weapons.get(weaponQuestion).setPosition(tempPosW); // move the tokens back to where they should be
     		tokens.get(suspectQuestion).setPosition(tempPosS);
 		}

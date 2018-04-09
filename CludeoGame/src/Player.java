@@ -116,7 +116,7 @@ public class Player {
     		return 1;
     	}
     	else if(info.size() == 1) {
-    		this.notes.recordNote(info.get(0), "X");
+    		this.notes.recordNote(info.get(0), "V");
     		JOptionPane.showMessageDialog(null, this.name + "'s notes have been updated!");
     		this.getLog().addAnswer(player.getName(), info.get(0));
     		player.getLog().addReveal(this.name, info.get(0));
@@ -136,7 +136,7 @@ public class Player {
 							tryCatch = true;
 						}
 						else {
-							this.notes.recordNote(info.get(choice - 1), "X");
+							this.notes.recordNote(info.get(choice - 1), "V");
 			        		this.getLog().addAnswer(player.getName(), info.get(choice - 1));
 			        		player.getLog().addReveal(this.name, info.get(choice - 1));
 						}
@@ -161,7 +161,7 @@ public class Player {
 							tryCatch = true;
 						}
 						else {
-							this.notes.recordNote(info.get(choice - 1), "X");
+							this.notes.recordNote(info.get(choice - 1), "V");
 			        		this.getLog().addAnswer(player.getName(), info.get(choice - 1));
 			        		player.getLog().addReveal(this.name, info.get(choice - 1));
 						}
