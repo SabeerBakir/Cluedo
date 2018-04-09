@@ -28,7 +28,7 @@ public class Rooms implements Iterable<Room>, Iterator<Room>{
 		rooms.add(new Room(5, 2, roomsArr[5], new Door(new Coordinates(17, 16), new Coordinates(16, 16), 1),
 				new Door(new Coordinates(20, 14), new Coordinates(20, 13), 2), null, null, new Coordinates(20, 16), false));
 		
-		rooms.add(new Room(6, 1, roomsArr[6], new Door(new Coordinates(6, 19), new Coordinates(6, 18), 1), null, null, null, new Coordinates(21, 2), true));
+		rooms.add(new Room(6, 1, roomsArr[6], new Door(new Coordinates(6, 19), new Coordinates(6, 18), 1), null, null, null, new Coordinates(2, 21), true));
 		
 		rooms.add(new Room(7, 3, roomsArr[7], new Door(new Coordinates(11, 18), new Coordinates(11, 17), 1),
 				new Door(new Coordinates(12, 18), new Coordinates(12, 17), 2),
