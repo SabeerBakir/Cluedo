@@ -268,7 +268,7 @@ public class Cluedo {
             	if(!diceRolled) ui.displayString("You must roll first.");
                 ui.display();
                 if(rolls == 0 && diceRolled) {
-                	ui.displayString("\nYour turn is over, press Enter to finish.");
+                	ui.displayString("\nYour turn is over, press Enter to finish and confirm that the screen has been cleared.");
                 	ui.getCommand();
                 	break;
                 }
