@@ -1,7 +1,11 @@
 package bots;
 
+import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.PriorityQueue;
+import java.util.HashMap;
+import java.util.Arrays;
 
 import gameengine.*;
 import gameengine.Map;
@@ -65,6 +69,10 @@ public class Bot1 implements BotAPI {
     		
     		public int getLinks() {
     			return links;
+    		}
+    		
+    		public String toString() {
+    			return String.valueOf(index);
     		}
     		
     	}
@@ -219,6 +227,170 @@ public class Bot1 implements BotAPI {
     		return temp;
     	}
     	
+    	private ArrayList<Node> getLinkedNodes(){
+    		ArrayList<Node> temp = new ArrayList<Node>();
+    		for(Node curr : nodes) {
+    			if(curr.links > 0) {
+    				temp.add(curr);
+    			}
+    		}
+    		return temp;
+    	}
+    	
+    	class NodePriority implements Comparable<NodePriority>{
+
+    		Node element;
+    		int dist;
+    		
+    		public NodePriority(Node element, int dist) {
+    			this.element = element;
+    			this.dist = dist;
+    		}
+    		
+			@Override
+			public int compareTo(NodePriority arg) {
+				return Integer.compare(this.dist, arg.dist);
+			}
+    		
+    	}
+    	
+    	public ArrayList<Node> minPath(int indexA, int indexB) {
+    		return a_star(getNode(indexA),getNode(indexB));
+    	}
+    	
+    	public ArrayList<Node> minPath(Node A, Node B) {
+    		return a_star(A,B);
+    	}
+    	
+    	private ArrayList<Node> dijkstra(Node source, Node target) {
+    		
+    		int[] dist = new int[nodes.size()];
+    		Node[] prev = new Node[nodes.size()];
+    		dist[source.index] = 0;
+    		PriorityQueue<NodePriority> qSet = new PriorityQueue<NodePriority>();
+    		
+    		for(Node curr : getLinkedNodes()) {
+    			if(curr != source) {
+    				dist[curr.index] = Integer.MAX_VALUE;
+    				prev[curr.index] = null;
+    			}
+    			qSet.add(new NodePriority(curr,dist[curr.index]));
+    		}
+    		
+    		while(!qSet.isEmpty()) {
+    			
+    			Node temp = qSet.remove().element;
+    			if(temp == target) break;
+    			for(Node n : temp.neighbours) {
+    				int alt = dist[temp.index] + length(temp,n);
+    				if(alt < dist[n.index]) {
+    					dist[n.index] = alt;
+    					prev[n.index] = temp;
+    					qSet.add(new NodePriority(n,alt));
+    					
+    				}
+    			}
+    			
+    		}
+    		
+    		ArrayList<Node> path = new ArrayList<Node>();
+    		while(prev[target.index] != null) {
+    			path.add(0, target);
+    			target = prev[target.index];
+    		}
+    		path.add(0,source);
+    		return path;
+    		
+    	}
+    	
+    	private ArrayList<Node> a_star(Node source, Node target){
+    		
+    		ArrayList<Node> closedSet = new ArrayList<Node>();
+    		ArrayList<Node> openSet = new ArrayList<Node>();
+    		openSet.add(source);
+    		Node[] cameFrom = new Node[nodes.size()];
+    		int[] gScore = new int[nodes.size()];
+    		int[] fScore = new int[nodes.size()];
+    		Arrays.fill(fScore, Integer.MAX_VALUE);
+    		Arrays.fill(gScore, Integer.MAX_VALUE);
+    		fScore[source.index] = heuristic(source,target);
+    		gScore[source.index] = 0;
+    		
+    		while(!openSet.isEmpty()) {
+    			
+    			Node curr = findMinIndex(toArray(openSet), fScore);
+    			if(curr == target) break;
+    			
+    			openSet.remove(curr);
+    			closedSet.add(curr);
+    			
+    			for(Node n : curr.neighbours) {
+    				
+    				if(closedSet.contains(n)) continue;
+    				if(!openSet.contains(n)) openSet.add(n);
+    				
+    				int distScore = gScore[curr.index] + length(curr,n);
+    				if(distScore >= gScore[n.index]) continue;
+    				
+    				cameFrom[n.index] = curr;
+    				gScore[n.index] = distScore;
+    				fScore[n.index] = gScore[n.index] + heuristic(n,target);
+    				
+    			}
+    			
+    		}
+    		
+    		ArrayList<Node> path = new ArrayList<Node>();
+    		while(cameFrom[target.index] != null) {
+    			path.add(0,target);
+    			target = cameFrom[target.index];
+    		}
+    		path.add(0,source);
+    		return path;
+    	}
+    	
+    	private Node[] toArray(ArrayList<Node> temp) {
+    		Node[] curr = new Node[temp.size()];
+    		for(int i = 0; i < temp.size(); i++) {
+    			curr[i] = temp.get(i);
+    		}
+    		return curr;
+    	}
+    	
+    	private Node findMinIndex(Node[] array, int[] fScore) {
+    		int minVal = fScore[array[0].index];
+    		int minIndex = 0;
+    		for(int idx = 1; idx < array.length; idx++) {
+    			if(fScore[array[idx].index] < minVal) {
+    				minVal = fScore[array[idx].index];
+    				minIndex = idx;
+    			}
+    		}
+    		return array[minIndex];
+    	}
+    	
+    	private int heuristic(Node u, Node v) {
+    		return Math.abs(u.x-v.x) + Math.abs(u.y-v.y);
+    	}
+    	
+    	private int length(Node u, Node v) {
+    		if(u.type == 0 && v.type == 0) {
+    			return 1;
+    		}
+    		if((u.type == 0 && v.type == 1) || (u.type == 1 && v.type == 0)) {
+    			return 7;
+    		}
+    		if((u.type == 1 && v.type == 3) || (u.type == 3 && v.type == 1)) {
+    			return 7;
+    		}
+    		if(u.type == 3 && v.type == 3) {
+    			return 7;
+    		}
+    		else {
+    			return Integer.MAX_VALUE;
+    		}
+    	}
+    	
     	public String toString() {
     		StringBuilder sb = new StringBuilder();
     		Iterator<Node> nodesI = nodes.iterator();
@@ -263,6 +435,22 @@ public class Bot1 implements BotAPI {
     		StringBuilder sb = new StringBuilder();
     		for(Node curr : nodes) {
         		if(curr.links>0) sb.append("L\t");
+        		else sb.append("\t");
+        		if((curr.index+1)%24==0) sb.append("\n");
+        	}
+    		return sb.toString();
+    	}
+    	
+    	public String toStringPath(ArrayList<Node> path) {
+    		StringBuilder sb = new StringBuilder();
+    		for(Node curr : nodes) {
+        		if(path.contains(curr)) {
+        			if(curr == path.get(0)) sb.append("S\t");
+        			else if(curr == path.get(path.size()-1)) sb.append("T\t");
+        			else if(curr.index == 173) sb.append('!');
+        			else sb.append("P\t");
+        		}
+        		else if(curr.links>0) sb.append("#\t");
         		else sb.append("\t");
         		if((curr.index+1)%24==0) sb.append("\n");
         	}
@@ -325,6 +513,10 @@ public class Bot1 implements BotAPI {
     
     public static void main(String[] args) {
     	Graph g = new Graph();
+//    	for(bots.Bot1.Graph.Node curr : g.minPath(4+24*7,17+24*20)) {
+//    		System.out.print(curr.index + "\t");
+//    	}
+//    	System.out.print("\n"+g.toStringPath(g.minPath(4+24*7,17+24*20))+"\n");
     }
 
 }
