@@ -36,7 +36,6 @@ public class Bot1 implements BotAPI {
     private String confirmedWeapon = null;
     private String confirmedRoom = null;
     
-    
     private static class Graph{
     	
     	public static class Node{
@@ -44,7 +43,7 @@ public class Bot1 implements BotAPI {
     		int index;
     		int x;
     		int y;
-    		int type;	// 0 = hallway, 1 = door, 2 = room, 3 = trap door, 4 = other
+    		int type;	// 0 = hallway, 1 = door, 2 = room, 3 = trap door, 4 = other, 5 = room centre
     		int links;	// number of vertices from this node
     		ArrayList<Node> neighbours = new ArrayList<Node>();	// ArrayList of neighbouring nodes
     		
@@ -52,7 +51,7 @@ public class Bot1 implements BotAPI {
     			this.index = this.index++;
     			this.x = x;
     			this.y = y;
-    			if(type >= 0 && type < 5) this.type = type;
+    			if(type >= 0 && type < 6) this.type = type;
     			else this.type = 4;
     			this.links = 0;
     		}
@@ -91,28 +90,28 @@ public class Bot1 implements BotAPI {
     	
     	private static int [][] tileType = new int[][] { // where 0 is a regular tile, 1 is a door tile, 2 are tiles which are not movable to, 3 are trap doors
             {2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 2, 2, 2, 2, 0, 2, 2, 2, 2, 2, 2, 2, 2, 2},
-            {2, 2, 2, 2, 2, 3, 2, 0, 0, 0, 2, 2, 2, 2, 0, 0, 0, 2, 2, 2, 2, 2, 2, 2},
-            {2, 2, 2, 2, 2, 2, 0, 0, 2, 2, 2, 2, 2, 2, 2, 2, 0, 0, 2, 2, 2, 2, 2, 2},
-            {2, 2, 2, 2, 2, 2, 0, 0, 2, 2, 2, 2, 2, 2, 2, 2, 0, 0, 2, 2, 2, 2, 2, 2},
+            {2, 2, 2, 2, 2, 3, 2, 0, 0, 0, 2, 2, 2, 2, 0, 0, 0, 2, 2, 5, 2, 2, 2, 2},
+            {2, 5, 2, 2, 2, 2, 0, 0, 2, 2, 2, 2, 2, 2, 2, 2, 0, 0, 2, 2, 2, 2, 2, 2},
+            {2, 2, 2, 2, 2, 2, 0, 0, 2, 2, 5, 2, 2, 2, 2, 2, 0, 0, 2, 2, 2, 2, 2, 2},
             {2, 2, 2, 2, 2, 2, 0, 0, 2, 2, 2, 2, 2, 2, 2, 2, 0, 0, 1, 2, 2, 2, 2, 2},
             {2, 2, 2, 2, 2, 2, 0, 0, 1, 2, 2, 2, 2, 2, 2, 1, 0, 0, 0, 2, 2, 2, 3, 2},
             {2, 2, 2, 2, 1, 2, 0, 0, 2, 2, 2, 2, 2, 2, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0},
             {0, 0, 0, 0, 0, 0, 0, 0, 2, 1, 2, 2, 2, 2, 1, 2, 0, 0, 0, 0, 0, 0, 0, 2},
             {2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 2, 2, 2, 2},
-            {2, 2, 2, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 2, 2, 2, 2},
-            {2, 2, 2, 2, 2, 2, 2, 2, 0, 0, 2, 2, 2, 2, 2, 0, 0, 0, 2, 2, 2, 2, 2, 2},
+            {2, 2, 2, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 5, 2, 2, 2},
+            {2, 2, 5, 2, 2, 2, 2, 2, 0, 0, 2, 2, 2, 2, 2, 0, 0, 0, 2, 2, 2, 2, 2, 2},
             {2, 2, 2, 2, 2, 2, 2, 2, 0, 0, 2, 2, 2, 2, 2, 0, 0, 0, 2, 2, 2, 2, 2, 2},
             {2, 2, 2, 2, 2, 2, 2, 1, 0, 0, 2, 2, 2, 2, 2, 0, 0, 0, 2, 2, 2, 2, 1, 2},
             {2, 2, 2, 2, 2, 2, 2, 2, 0, 0, 2, 2, 2, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 2},
-            {2, 2, 2, 2, 2, 2, 2, 2, 0, 0, 2, 2, 2, 2, 2, 0, 0, 0, 2, 2, 1, 2, 2, 2},
-            {2, 2, 2, 2, 2, 2, 1, 2, 0, 0, 2, 2, 2, 2, 2, 0, 0, 2, 2, 2, 2, 2, 2, 2},
+            {2, 2, 2, 2, 2, 2, 2, 2, 0, 0, 2, 2, 5, 2, 2, 0, 0, 0, 2, 2, 1, 2, 2, 2},
+            {2, 2, 2, 2, 2, 2, 1, 2, 0, 0, 2, 2, 2, 2, 2, 0, 0, 2, 5, 2, 2, 2, 2, 2},
             {2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 1, 2, 2, 0, 0, 1, 2, 2, 2, 2, 2, 2},
             {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 2, 2, 2, 2, 2},
             {2, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 1, 1, 2, 2, 0, 0, 0, 2, 2, 2, 2, 2, 2},
-            {3, 2, 2, 2, 2, 2, 1, 0, 0, 2, 2, 2, 2, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {3, 2, 2, 2, 2, 2, 1, 0, 0, 2, 5, 2, 2, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0},
             {2, 2, 2, 2, 2, 2, 2, 0, 0, 2, 2, 2, 2, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0, 2},
             {2, 2, 2, 2, 2, 2, 2, 0, 0, 2, 2, 2, 2, 2, 2, 0, 0, 1, 2, 2, 2, 2, 2, 3},
-            {2, 2, 2, 2, 2, 2, 2, 0, 0, 2, 2, 2, 2, 2, 2, 0, 0, 2, 2, 2, 2, 2, 2, 2},
+            {2, 2, 5, 2, 2, 2, 2, 0, 0, 2, 2, 2, 2, 2, 2, 0, 0, 2, 2, 5, 2, 2, 2, 2},
             {2, 2, 2, 2, 2, 2, 2, 0, 0, 2, 2, 2, 2, 2, 2, 0, 0, 2, 2, 2, 2, 2, 2, 2},
             {2, 2, 2, 2, 2, 2, 2, 0, 2, 2, 2, 2, 2, 2, 2, 2, 0, 2, 2, 2, 2, 2, 2, 2},
         };
@@ -188,14 +187,39 @@ public class Bot1 implements BotAPI {
         	addMutualLinks(5+24*1,23+24*21);	// Trap Door: Kitchen <-----> Study
         	//20
         	addMutualLinks(22+24*5,0+24*19);	// Trap Door: Conservatory <-----> Lounge
-        	//21
-        	addMutualLinks(5+24*1,4+24*6);		// Trap Door <-----> Kitchen
-        	//22
-        	addMutualLinks(22+24*5,18+24*4);	// Trap Door <-----> Conservatory
-        	//23
-        	addMutualLinks(23+24*21,17+24*21);	// Trap Door <-----> Study
-        	//24
-        	addMutualLinks(0+24*19,6+24*19);	// Trap Door <-----> Lounge
+        	
+        	// Kitchen
+        	addMutualLinks(1+24*2,4+24*6);
+        	addMutualLinks(1+24*2,5+24*1);		// Trap Door <-----> Kitchen
+        	// Ballroom
+        	addMutualLinks(10+3*24,8+24*5);
+        	addMutualLinks(10+3*24,9+24*7);
+        	addMutualLinks(10+3*24,14+24*7);
+        	addMutualLinks(10+3*24,15+24*5);
+        	// Conservatory
+        	addMutualLinks(19+24*1,18+24*4);
+        	addMutualLinks(19+24*1,22+24*5);	// Trap Door <------> Conservatory
+        	// Billiard Room
+        	addMutualLinks(20+24*9,18+24*9);
+        	addMutualLinks(20+24*9,22+24*12);
+        	// Library
+        	addMutualLinks(18+24*15,17+24*16);
+        	addMutualLinks(18+24*15,20+24*14);
+        	// Study
+        	addMutualLinks(19+24*22,17+24*21);
+        	addMutualLinks(19+24*22,23+24*21);	// Trap Door <-----> Study
+        	// Hall
+        	addMutualLinks(10+24*19,11+24*18);
+        	addMutualLinks(10+24*19,12+24*18);
+        	addMutualLinks(19+24*19,14+24*20);
+        	// Lounge
+        	addMutualLinks(2+24*22,6+24*19);
+        	addMutualLinks(2+24*22,0+24*19);	// Trap Door <-----> Lounge
+        	// Dining Room
+        	addMutualLinks(2+24*10,6+24*15);
+        	addMutualLinks(2+24*10,7+24*12);
+        	// Basement
+        	addMutualLinks(12+24*14,12+24*16);        	
         	
         }
     	
@@ -342,7 +366,10 @@ public class Bot1 implements BotAPI {
     				if(!openSet.contains(n)) openSet.add(n);
     				
     				int distScore = gScore[curr.index] + length(curr,n);
+    				//if(length(curr,n) == 4) System.out.println("[" + curr + "," + curr.type + "] <--> [" + n + "," + n.type + "]"); 
     				if(distScore >= gScore[n.index]) continue;
+    				
+    				//System.out.println(curr + " --> " + n);
     				
     				cameFrom[n.index] = curr;
     				gScore[n.index] = distScore;
@@ -392,14 +419,17 @@ public class Bot1 implements BotAPI {
     		if((u.type == 0 && v.type == 1) || (u.type == 1 && v.type == 0)) {
     			return 7;
     		}
-    		if((u.type == 1 && v.type == 3) || (u.type == 3 && v.type == 1)) {
-    			return 7;
+    		if((u.type == 5 && v.type == 3) || (u.type == 3 && v.type == 5)) {
+    			return 4;
     		}
     		if(u.type == 3 && v.type == 3) {
     			return 7;
     		}
+    		if((u.type == 1 && v.type == 5) || (u.type == 5 && v.type == 1)) {
+    			return 0;
+    		}
     		else {
-    			return Integer.MAX_VALUE;
+    			return 7;
     		}
     	}
     	
@@ -459,7 +489,6 @@ public class Bot1 implements BotAPI {
         		if(path.contains(curr)) {
         			if(curr == path.get(0)) sb.append("S\t");
         			else if(curr == path.get(path.size()-1)) sb.append("T\t");
-        			else if(curr.index == 173) sb.append('!');
         			else sb.append("P\t");
         		}
         		else if(curr.links>0) sb.append("#\t");
@@ -470,7 +499,7 @@ public class Bot1 implements BotAPI {
     	}
     	
     }
-
+    
     private class Notes{
     	String[][] suspects = new String[6][4];
     	String[][] weapons = new String[6][4];
