@@ -25,6 +25,9 @@ public class Bot1 implements BotAPI {
     private Dice dice;
     private Log log;
     private Deck deck;
+    private int moves;
+    private Graph g;
+    
     
     private static class Graph{
     	
@@ -466,6 +469,8 @@ public class Bot1 implements BotAPI {
         this.dice = dice;
         this.log = log;
         this.deck = deck;
+        this.moves = 0;
+        this.g = new Graph();
     }
 
     public String getName() {
@@ -473,13 +478,53 @@ public class Bot1 implements BotAPI {
     }
 
     public String getCommand() {
-        // Add your code here
-        return "done";
+    	if(moves == dice.getTotal() || player.getToken().isInRoom()){
+    		moves = 0;
+    		return "done";
+    	}
+    	return "roll"; // roll and move
     }
 
     public String getMove() {
-        // Add your code here
-        return "r";
+    	Coordinates pos = player.getToken().getPosition();
+    	
+    	
+    	// Nearest room
+    	int minIndex = 0;
+    	int minVal = Integer.MAX_VALUE;
+    	for(bots.Bot1.Graph.Node n : g.nodes){
+    		if(n.type == 1 && n.index != pos.getCol() + 24*pos.getRow()){
+    			if(g.heuristic(g.getNode(pos.getCol() + 24*pos.getRow()), n) < minVal){
+    				minVal= g.heuristic(g.getNode(pos.getCol() + 24*pos.getRow()), n);
+    				minIndex = n.index;
+    			}
+    		}
+    	}
+        
+    	Coordinates dest = new Coordinates(minIndex%24, minIndex/24);
+        
+        int across = g.minPath(pos.getCol() + 24*pos.getRow(), dest.getCol() + 24*dest.getRow()).get(1).y;
+        int down = g.minPath(pos.getCol() + 24*pos.getRow(), dest.getCol() + 24*dest.getRow()).get(1).x;
+        
+    	if(across > pos.getCol()){
+    		moves++;
+    		return "r";
+    	}
+    	else if(across < pos.getCol()){
+    		moves++;
+    		return "l";
+    	}
+    	else if(down > pos.getRow()){
+    		moves++;
+    		return "d";
+    	}
+    	else if(down < pos.getRow()){
+    		moves++;
+    		return "u";
+    	}
+    	else{
+    		return "error";
+        }
     }
 
     public String getSuspect() {
@@ -517,6 +562,17 @@ public class Bot1 implements BotAPI {
 //    		System.out.print(curr.index + "\t");
 //    	}
 //    	System.out.print("\n"+g.toStringPath(g.minPath(4+24*7,17+24*20))+"\n");
+    	
+    	ArrayList<bots.Bot1.Graph.Node> temp = new ArrayList<>();
+    	temp = g.minPath(0 + 24*7, 7 + 24*9);
+//    	System.out.println(g.toStringPath(g.minPath(0 + 24*7, 7 + 24*9)));
+    	
+//    	for(bots.Bot1.Graph.Node x : temp){
+//    		System.out.println(x.index%24 + ", " + x.index/24);
+//    	}
+    	for(bots.Bot1.Graph.Node x : temp){
+    		System.out.println(x.y + ", " + x.x);
+    	}
     }
 
 }
