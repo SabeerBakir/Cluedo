@@ -4,11 +4,11 @@ import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.PriorityQueue;
+import java.util.Random;
 import java.util.HashMap;
 import java.util.Arrays;
 
 import gameengine.*;
-import gameengine.Map;
 
 @SuppressWarnings("unused")
 public class Bot1 implements BotAPI {
@@ -27,6 +27,14 @@ public class Bot1 implements BotAPI {
     private Deck deck;
     private int moves;
     private Graph g;
+    private Notes notes;
+    private boolean markCards = true; // for marking the cards into the notes
+    private boolean askedQuestion = false; // for checking if a question has been asked already
+    private int questionsAsked = 0; // keeping track of how many questions this bot asks
+    private Random rand = new Random();
+    private String confirmedSuspect = null;
+    private String confirmedWeapon = null;
+    private String confirmedRoom = null;
     
     
     private static class Graph{
@@ -79,6 +87,7 @@ public class Bot1 implements BotAPI {
     		}
     		
     	}
+
     	
     	private static int [][] tileType = new int[][] { // where 0 is a regular tile, 1 is a door tile, 2 are tiles which are not movable to, 3 are trap doors
             {2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 2, 2, 2, 2, 0, 2, 2, 2, 2, 2, 2, 2, 2, 2},
@@ -462,6 +471,112 @@ public class Bot1 implements BotAPI {
     	
     }
 
+    private class Notes{
+    	String[][] suspects = new String[6][4];
+    	String[][] weapons = new String[6][4];
+    	String[][] rooms = new String[9][4];
+    	
+    	
+    	
+    	Notes(){
+	    	int i = 0; // counter
+	    	
+	    	for(String s : Names.SUSPECT_NAMES){
+	    		suspects[i][0] = s;
+	    		i++;
+	    	}
+	    	i=0;
+	    	for(String s : Names.WEAPON_NAMES){
+	    		weapons[i][0] = s;
+	    		i++;
+	    	}
+	    	i=0;
+	    	for(String s : Names.ROOM_CARD_NAMES){
+	    		rooms[i][0] = s;
+	    		i++;
+	    	}
+    	}
+    	
+    	void add(String mark, String name){ // for cards you know 100%
+    		
+    		if(Names.isSuspect(name)){
+    			for(int i = 0; i < Names.SUSPECT_NAMES.length; i++){
+    				if(suspects[i][0].toLowerCase().equals(name.toLowerCase().trim())){
+    					for(int j = 1; j < suspects[i].length; j++){
+    						suspects[i][j] = mark;
+    					}
+    				}
+    			}
+    		}
+    		else if(Names.isWeapon(name)){
+    			for(int i = 0; i < Names.WEAPON_NAMES.length; i++){
+    				if(weapons[i][0].toLowerCase().equals(name.toLowerCase().trim())){
+    					for(int j = 1; j < weapons[i].length; j++){
+    						weapons[i][j] = mark;
+    					}
+    				}
+    			}
+    		}
+    		else if(Names.isRoomCard(name)){
+    			for(int i = 0; i < Names.ROOM_CARD_NAMES.length; i++){
+    				//System.out.println(rooms[i][0].toLowerCase() + "\t" + name.toLowerCase().trim());
+    				if(rooms[i][0].toLowerCase().equals(name.toLowerCase().trim())){
+    					for(int j = 1; j < rooms[i].length; j++){
+    						rooms[i][j] = mark;
+    					}
+    				}
+    			}
+    		}
+    	}
+    	
+    	public String toString(){
+    		StringBuffer buf = new StringBuffer();
+    		
+    		buf.append("Suspects\n---------------------\n");
+    		for(int i = 0; i < Names.SUSPECT_NAMES.length; i++){
+    			for(int j = 0; j < suspects[i].length; j++){
+    				if(suspects[i][j] == null){
+    					buf.append("\t");
+    				}
+    				else{
+    					buf.append(suspects[i][j] + "\t");
+    				}
+    			}
+    			buf.append("\n");
+    		}
+    		buf.append("\n");
+    		buf.append("Weeapons\n---------------------\n");
+    		for(int i = 0; i < Names.WEAPON_NAMES.length; i++){
+    			for(int j = 0; j < weapons[i].length; j++){
+    				if(weapons[i][j] == null){
+    					buf.append("\t");
+    				}
+    				else{
+    					buf.append(weapons[i][j] + "\t");
+    				}
+    			}
+    			buf.append("\n");
+    		}
+    		buf.append("\n");
+    		buf.append("Rooms\n---------------------\n");
+    		for(int i = 0; i < Names.ROOM_CARD_NAMES.length; i++){
+    			for(int j = 0; j < rooms[i].length; j++){
+    				if(rooms[i][j] == null){
+    					buf.append("\t");
+    				}
+    				else{
+    					buf.append(rooms[i][j] + "\t");
+    				}
+    			}
+    			buf.append("\n");
+    		}
+    		buf.append("\n");
+    		
+			return buf.toString();
+    	}
+    	
+    }
+    
     public Bot1 (Player player, PlayersInfo playersInfo, Map map, Dice dice, Log log, Deck deck) {
         this.player = player;
         this.playersInfo = playersInfo;
@@ -471,15 +586,38 @@ public class Bot1 implements BotAPI {
         this.deck = deck;
         this.moves = 0;
         this.g = new Graph();
+	    this.notes = new Notes();
     }
 
+
+    
     public String getName() {
         return "Bot1"; // must match the class name
     }
 
     public String getCommand() {
+    	if(markCards){
+    		markCards = false;
+	    	for(Card x : player.getCards()){
+	    		notes.add("X", x.toString());
+	    	}
+    	}	
+    	if(!player.getToken().isInRoom()){
+    		askedQuestion = false;
+    	}
+    	
     	if(moves == dice.getTotal() || player.getToken().isInRoom()){
     		moves = 0;
+    		if(player.getToken().isInRoom() && !askedQuestion){ // Ask Question
+    			if(confirmedSuspect != null && confirmedWeapon != null && confirmedRoom != null){
+    				return "accuse";
+    			}
+    			else{
+	    			askedQuestion = true;
+	    			questionsAsked++;
+	    			return "question";
+    			}
+    		}
     		return "done";
     	}
     	return "roll"; // roll and move
@@ -528,18 +666,42 @@ public class Bot1 implements BotAPI {
     }
 
     public String getSuspect() {
-        // Add your code here
-        return Names.SUSPECT_NAMES[0];
+		if(confirmedSuspect != null){
+			return confirmedSuspect;
+		}
+    	if(questionsAsked == 1){ // On the first question ...
+	    	int chance = rand.nextInt(100) + 1;
+	    	if(chance < 80){ //80% of the time
+	    		for(Card c : player.getCards()){
+	    			if(Names.isSuspect(c.toString())){
+	    				return c.toString();
+	    			}
+	    		}
+	    	}
+    	}
+    	else{ // 20% of the time ...
+    		for(int i = 0; i < Names.SUSPECT_NAMES.length; i++){
+    			if(!notes.suspects[i].toString().contains("X")){ // Ask about a card we do not know anything about
+    				return notes.suspects[i][0];
+    			}
+    		}
+    	}
+    	return Names.SUSPECT_NAMES[rand.nextInt(Names.SUSPECT_NAMES.length - 1)]; // if none of the above apply, we give back a random name
     }
 
     public String getWeapon() {
+		if(confirmedWeapon != null){
+			return confirmedWeapon;
+		}
         // Add your code here
         return Names.WEAPON_NAMES[0];
     }
 
     public String getRoom() {
-        // Add your code here
-        return Names.ROOM_NAMES[0];
+    	if(confirmedRoom != null){
+    		return confirmedRoom;
+    	}
+        return player.getToken().getRoom().toString();
     }
 
     public String getDoor() {
@@ -556,23 +718,23 @@ public class Bot1 implements BotAPI {
         // Add your code here
     }
     
-    public static void main(String[] args) {
-    	Graph g = new Graph();
-//    	for(bots.Bot1.Graph.Node curr : g.minPath(4+24*7,17+24*20)) {
-//    		System.out.print(curr.index + "\t");
-//    	}
-//    	System.out.print("\n"+g.toStringPath(g.minPath(4+24*7,17+24*20))+"\n");
-    	
-    	ArrayList<bots.Bot1.Graph.Node> temp = new ArrayList<>();
-    	temp = g.minPath(0 + 24*7, 7 + 24*9);
-//    	System.out.println(g.toStringPath(g.minPath(0 + 24*7, 7 + 24*9)));
-    	
+//    public static void main(String[] args) {
+//    	Graph g = new Graph();
+////    	for(bots.Bot1.Graph.Node curr : g.minPath(4+24*7,17+24*20)) {
+////    		System.out.print(curr.index + "\t");
+////    	}
+////    	System.out.print("\n"+g.toStringPath(g.minPath(4+24*7,17+24*20))+"\n");
+//    	
+//    	ArrayList<bots.Bot1.Graph.Node> temp = new ArrayList<>();
+//    	temp = g.minPath(0 + 24*7, 7 + 24*9);
+////    	System.out.println(g.toStringPath(g.minPath(0 + 24*7, 7 + 24*9)));
+//    	
+////    	for(bots.Bot1.Graph.Node x : temp){
+////    		System.out.println(x.index%24 + ", " + x.index/24);
+////    	}
 //    	for(bots.Bot1.Graph.Node x : temp){
-//    		System.out.println(x.index%24 + ", " + x.index/24);
+//    		System.out.println(x.y + ", " + x.x);
 //    	}
-    	for(bots.Bot1.Graph.Node x : temp){
-    		System.out.println(x.y + ", " + x.x);
-    	}
-    }
+//    }
 
 }
