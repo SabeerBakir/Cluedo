@@ -26,8 +26,8 @@ public class Bot1 implements BotAPI {
     private Log log;
     private Deck deck;
     private int moves;
-    private Graph g;
-    private Notes notes;
+    private Graph g = new Graph();;
+    private Notes notes = new Notes();
     private boolean markCards = true; // for marking the cards into the notes
     private boolean askedQuestion = false; // for checking if a question has been asked already
     private int questionsAsked = 0; // keeping track of how many questions this bot asks
@@ -36,6 +36,8 @@ public class Bot1 implements BotAPI {
     private String confirmedWeapon = null;
     private String confirmedRoom = null;
     private ArrayList<Card> revealedCards = new ArrayList<>();
+    private int logLineCounter = 0;
+    private ArrayList<Integer> cardInfoSetsNumber = new ArrayList<>(); 
     
     private static class Graph{
     	
@@ -527,6 +529,7 @@ public class Bot1 implements BotAPI {
 	    	}
     	}
     	
+    	
     	void add(String mark, String name){ // for cards you know 100%
     		
     		if(Names.isSuspect(name)){
@@ -577,6 +580,90 @@ public class Bot1 implements BotAPI {
 					notes.rooms[i][botNum] = "X";
 				}
 			}
+    		
+    		// Perform Checks
+    		checkForConfirmedSuspect();
+    		checkForConfirmedWeapon();
+    		checkForConfirmedRoom();
+    	}
+    	
+    	public void unknownCardShown(String suspect, String weapon, String room, int botNum, int mark) {
+    		
+    		String strMark = String.valueOf(mark);
+    		
+    		for(int i = 0; i < Names.SUSPECT_NAMES.length; i++) {
+    			if(suspects[i][0].toLowerCase().equals(suspect.toLowerCase().trim())) {
+    				for(int j = 1; j < suspects[i].length; j++) {
+    					if(j == botNum) {
+    			    		StringBuffer buf = new StringBuffer();
+    			    		if(suspects[i][j] == null) {
+    			    			buf.append(strMark);
+    			    		}
+    			    		else if(suspects[i][j] == "X"){
+    			    			buf.append("X");
+    			    		}
+    			    		else if(suspects[i][j] == "tick"){
+    			    			buf.append("tick");
+    			    		}
+    			    		else {
+    			    			buf.append(suspects[i][j] + " " + strMark);
+    			    		}
+    						suspects[i][j] = buf.toString();
+    					}
+    				}
+    			}
+    			break;
+			}
+    		
+    		for(int i = 0; i < Names.WEAPON_NAMES.length; i++) {
+    			if(weapons[i][0].toLowerCase().equals(weapon.toLowerCase().trim())) {
+    				for(int j = 1; j < weapons[i].length; j++) {
+    					if(j == botNum) {
+    			    		StringBuffer buf = new StringBuffer();
+    			    		if(weapons[i][j] == null) {
+    			    			buf.append(strMark);
+    			    		}
+    			    		else if(weapons[i][j] == "X"){
+    			    			buf.append("X");
+    			    		}
+    			    		else if(suspects[i][j] == "tick"){
+    			    			buf.append("tick");
+    			    		}
+    			    		else {
+    			    			buf.append(weapons[i][j] + " " + strMark);
+    			    		}
+    						weapons[i][j] = buf.toString();
+    					}
+    				}
+    			}
+    			break;
+			}
+    		
+    		for(int i = 0; i < Names.ROOM_CARD_NAMES.length; i++) {
+    			if(rooms[i][0].toLowerCase().equals(room.toLowerCase().trim())) {
+    				for(int j = 1; j < rooms[i].length; j++) {
+    					if(j == botNum) {
+    			    		StringBuffer buf = new StringBuffer();
+    			    		if(rooms[i][j] == null) {
+    			    			buf.append(strMark);
+    			    		}
+    			    		else if(rooms[i][j] == "X"){
+    			    			buf.append("X");
+    			    		}
+    			    		else if(suspects[i][j] == "tick"){
+    			    			buf.append("tick");
+    			    		}
+    			    		else {
+    			    			buf.append(rooms[i][j] + " " + strMark);
+    			    		}
+    						rooms[i][j] = buf.toString();    						
+    					}
+    				}
+    			}
+    			break;
+			}
+    		
+    		System.out.println(this);
     	}
     	
     	public void cardShown(String card, int botNum) {
@@ -621,6 +708,53 @@ public class Bot1 implements BotAPI {
     			}
     			break;
 			}
+    		
+    		// Perform Checks
+    		checkForConfirmedSuspect();
+    		checkForConfirmedWeapon();
+    		checkForConfirmedRoom();
+    	}
+    	
+    	void checkForConfirmedSuspect() {
+    		for(int i = 0; i < Names.SUSPECT_NAMES.length; i++) {
+    			int xCount = 0; // count the amount of X's in a row
+    			for(int j = 1; j < suspects[i].length; j++) {
+    				if(suspects[i][j] == "X") {
+    					xCount++;
+    				}
+    			}
+    			if(xCount == playersInfo.numPlayers() && !player.getCards().contains(suspects[i][0])) { // No one has this card and we don't hold the card either
+    				confirmedSuspect = suspects[i][0];
+    			}
+    		}
+    	}
+    	
+    	void checkForConfirmedWeapon() {
+    		for(int i = 0; i < Names.WEAPON_NAMES.length; i++) {
+    			int xCount = 0; // count the amount of X's in a row
+    			for(int j = 1; j < weapons[i].length; j++) {
+    				if(weapons[i][j] == "X") {
+    					xCount++;
+    				}
+    			}
+    			if(xCount == playersInfo.numPlayers() && !player.getCards().contains(weapons[i][0])) { // No one has this card and we don't hold the card either
+    				confirmedWeapon = weapons[i][0];
+    			}
+    		}
+    	}
+    	
+    	void checkForConfirmedRoom() {
+    		for(int i = 0; i < Names.ROOM_CARD_NAMES.length; i++) {
+    			int xCount = 0; // count the amount of X's in a row
+    			for(int j = 1; j < rooms[i].length; j++) {
+    				if(rooms[i][j] == "X") {
+    					xCount++;
+    				}
+    			}
+    			if(xCount == playersInfo.numPlayers() && !player.getCards().contains(rooms[i][0])) { // No one has this card and we don't hold the card either
+    				confirmedRoom = rooms[i][0];
+    			}
+    		}
     	}
     	
     	public String toString(){
@@ -679,12 +813,8 @@ public class Bot1 implements BotAPI {
         this.log = log;
         this.deck = deck;
         this.moves = 0;
-        this.g = new Graph();
-	    this.notes = new Notes();
     }
 
-
-    
     public String getName() {
         return "Bot1"; // must match the class name
     }
@@ -702,7 +832,55 @@ public class Bot1 implements BotAPI {
     	
     	//TODO: Parse Log, and see who asking what
     	
-    	
+    	int counter = 0; //temporary counter
+		String suspect = null;
+    	String weapon = null;
+    	String room = null;
+    	for(String s : log) {
+    		if(counter > logLineCounter) { //this way we don't parse old information
+	    		System.out.println(s);
+	    		if(s.contains("questioned")) {
+	    			for(String x : Names.SUSPECT_NAMES) {
+	    				if(s.substring(s.lastIndexOf(")")).contains(x)) {
+	    					suspect = x;
+	    					break;
+	    				}
+	    			}
+	    			for(String y : Names.WEAPON_NAMES) {
+	    				if(s.contains(y)) {
+	    					weapon = y;
+	    					break;
+	    				}
+	    			}
+	    			for(String z : Names.ROOM_CARD_NAMES) {
+	    				if(s.contains(z)) {
+	    					room = z;
+	    					break;
+	    				}
+	    			}
+	    		}
+	    		if(s.contains("did not show any cards") && s.substring(0, s.indexOf(" ")).equals(player.getName())) {
+	    			int botNum = getBotNum(s.substring(0, s.indexOf(" ")));
+	    			notes.noCardShown(suspect, weapon, room, botNum);
+	    		}
+	    		if(s.contains("showed")) {
+	    			int botNum = getBotNum(s.substring(0, s.indexOf(" ")));
+	    			cardInfoSetsNumber.add(botNum);
+	    			int count = 0;
+	    			for(int x : cardInfoSetsNumber) {
+	    				if(botNum == x) {
+	    					count++;
+	    				}
+	    			}
+	    			notes.unknownCardShown(suspect, weapon, room, botNum, count);
+	    		}
+	    		counter++;
+	    		logLineCounter++;
+    		}
+    		else {
+    			counter++;
+    		}
+    	}
     	
     	
     	if(moves == dice.getTotal() || player.getToken().isInRoom()){
@@ -861,20 +1039,30 @@ public class Bot1 implements BotAPI {
     		}
     	}
     	for(String s : response) {
-    		System.out.println(s);
+    		//System.out.println(s);
     		if(s.contains("did not show any cards")) {
-    			int botNum = Integer.parseInt(s.substring(3, 4));
+    			int botNum = getBotNum(s.substring(0, s.indexOf(" ")));
     			notes.noCardShown(suspect, weapon, room, botNum);
     		}
     		if(s.contains("showed")) {
     			String card = s.substring(s.lastIndexOf(" ") + 1, s.length() - 1);
-    			int botNum = Integer.parseInt(s.substring(3, 4));
+    			int botNum = getBotNum(s.substring(0, s.indexOf(" ")));
+    			//System.out.println(botNum);
     			notes.cardShown(card, botNum);
-    			System.out.println(notes);
+    			//System.out.println(notes);
     		}
     	}
     }
     
+    public int getBotNum(String playerName) {
+    	String[] temp = playersInfo.getPlayersNames();
+    	for(int i = 0; i < temp.length; i++) {
+    		if(temp[i].equals(playerName)) {
+    			return (i + 1);
+    		}
+    	}
+    	return -1; // error
+    }
 //    public static void main(String[] args) {
 //    	Graph g = new Graph();
 ////    	for(bots.Bot1.Graph.Node curr : g.minPath(4+24*7,17+24*20)) {
