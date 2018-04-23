@@ -38,14 +38,14 @@ public class Bot2 implements BotAPI {
 
     public String getCommand() {
         // Add your code here
-        return JOptionPane.showInputDialog("getCommand");
-    	//return "done";
+        //return JOptionPane.showInputDialog("getCommand");
+    	return "done";
     }
 
     public String getMove() {
         // Add your code here
-       return JOptionPane.showInputDialog("getMove");
-       //return "r";
+       //return JOptionPane.showInputDialog("getMove");
+       return "r";
     }
 
     public String getSuspect() {

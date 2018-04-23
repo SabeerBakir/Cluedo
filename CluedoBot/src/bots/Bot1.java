@@ -38,6 +38,8 @@ public class Bot1 implements BotAPI {
     private ArrayList<Card> revealedCards = new ArrayList<>();
     private int logLineCounter = 0;
     private ArrayList<Integer> cardInfoSetsNumber = new ArrayList<>(); 
+    private boolean nextTurn = true;
+    private int closestDoor = 1;
     
     private static class Graph{
     	
@@ -826,11 +828,11 @@ public class Bot1 implements BotAPI {
 	    		notes.add("X", x.toString());
 	    	}
     	}	
-    	if(!player.getToken().isInRoom()){
-    		askedQuestion = false;
-    	}
     	
-    	//TODO: Parse Log, and see who asking what
+    	if(moves != dice.getTotal()) {
+    		moves = dice.getTotal();
+    		return "roll";
+    	}
     	
     	int counter = 0; //temporary counter
 		String suspect = null;
@@ -889,34 +891,89 @@ public class Bot1 implements BotAPI {
     			if(confirmedSuspect != null && confirmedWeapon != null && confirmedRoom != null){
     				return "accuse";
     			}
-    			else{
+    			else if(!askedQuestion){
 	    			askedQuestion = true;
 	    			questionsAsked++;
 	    			return "question";
     			}
     		}
-    		return "done";
     	}
-    	return "roll"; // roll and move
+    	nextTurn = true;
+    	return "done"; // roll and move
     }
 
     public String getMove() {
-    	Coordinates pos = player.getToken().getPosition();
-    	
+    	Coordinates pos = player.getToken().getPosition();;
+    	Coordinates dest;	
     	
     	// Nearest room
-    	int minIndex = 0;
-    	int minVal = Integer.MAX_VALUE;
-    	for(bots.Bot1.Graph.Node n : g.nodes){
-    		if(n.type == 1 && n.index != pos.getCol() + 24*pos.getRow()){
-    			if(g.heuristic(g.getNode(pos.getCol() + 24*pos.getRow()), n) < minVal){
-    				minVal= g.heuristic(g.getNode(pos.getCol() + 24*pos.getRow()), n);
-    				minIndex = n.index;
+    	if(questionsAsked == 0) {
+	    	int minIndex = 0;
+	    	int minVal = Integer.MAX_VALUE;
+	    	for(bots.Bot1.Graph.Node n : g.nodes){
+	    		if(n.type == 1 && n.index != pos.getCol() + 24*pos.getRow()){
+	    			if(g.heuristic(g.getNode(pos.getCol() + 24*pos.getRow()), n) < minVal){
+	    				minVal= g.heuristic(g.getNode(pos.getCol() + 24*pos.getRow()), n);
+	    				minIndex = n.index;
+	    			}
+	    		}
+	    	}
+	    	dest = new Coordinates(minIndex%24, minIndex/24);
+    	}
+    	else {
+    		ArrayList<String> leastInfo = new ArrayList<>();
+    		for(int i = 0; i < Names.ROOM_CARD_NAMES.length; i++) {
+    			int amount = 0;
+    			for(int j = 1; j < notes.rooms[i].length; j++) {
+    				if(notes.rooms[i][j] != "X") {
+    					amount++;
+    				}
+    			}
+    			if(amount >= 3) { // this number can be changed
+    				if(player.getToken().isInRoom()) {
+    					if(!notes.rooms[i][0].equals(player.getToken().getRoom().toString())) {
+    						// Do nothing
+    					}
+    				}
+    				else {
+    					leastInfo.add(notes.rooms[i][0]);
+    				}
     			}
     		}
-    	}
-        
-    	Coordinates dest = new Coordinates(minIndex%24, minIndex/24);
+    		
+	    	int minIndex = 0;
+	    	int minVal = Integer.MAX_VALUE;
+	    	
+	    	for(String s : leastInfo) {
+	    		if(map.getRoom(s).getNumberOfDoors() > 1) {
+	    			for(int i = 0; i < map.getRoom(s).getNumberOfDoors(); i++) {
+	    				Coordinates temp = map.getRoom(s).getDoorCoordinates(i);
+	    				bots.Bot1.Graph.Node n = g.getNode(temp.getCol() + 24*temp.getRow());
+	    	    		if(n.type == 1 && n.index != pos.getCol() + 24*pos.getRow()){
+	    	    			if(g.heuristic(g.getNode(pos.getCol() + 24*pos.getRow()), n) < minVal){
+	    	    				minVal= g.heuristic(g.getNode(pos.getCol() + 24*pos.getRow()), n);
+	    	    				minIndex = n.index;
+	    	    			}
+	    	    		}
+	    			}
+	    		}
+	    		else { // only has 1 door
+	    			Coordinates temp = map.getRoom(s).getDoorCoordinates(0);
+	    			bots.Bot1.Graph.Node n = g.getNode(temp.getCol() + 24*temp.getRow());
+		    		if(n.type == 1 && n.index != pos.getCol() + 24*pos.getRow()){
+		    			if(g.heuristic(g.getNode(pos.getCol() + 24*pos.getRow()), n) < minVal){
+		    				minVal= g.heuristic(g.getNode(pos.getCol() + 24*pos.getRow()), n);
+		    				minIndex = n.index;
+		    			}
+		    		}
+	    		}
+	    	}
+	    	
+	    	
+	    	dest = new Coordinates(minIndex%24, minIndex/24);   
+    		
+    	}       
+    	
         
         int across = g.minPath(pos.getCol() + 24*pos.getRow(), dest.getCol() + 24*dest.getRow()).get(1).y;
         int down = g.minPath(pos.getCol() + 24*pos.getRow(), dest.getCol() + 24*dest.getRow()).get(1).x;
@@ -982,8 +1039,7 @@ public class Bot1 implements BotAPI {
     }
 
     public String getDoor() {
-        // Add your code here
-        return "1";
+        return Integer.toString(closestDoor + 1);
     }
 
     public String getCard(Cards matchingCards) {
