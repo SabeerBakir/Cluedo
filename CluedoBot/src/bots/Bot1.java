@@ -35,6 +35,7 @@ public class Bot1 implements BotAPI {
     private String confirmedSuspect = null;
     private String confirmedWeapon = null;
     private String confirmedRoom = null;
+    private ArrayList<Card> revealedCards = new ArrayList<>();
     
     private static class Graph{
     	
@@ -558,6 +559,70 @@ public class Bot1 implements BotAPI {
     		}
     	}
     	
+    	public void noCardShown(String suspect, String weapon, String room, int botNum) {
+    		for(int i = 0; i < Names.SUSPECT_NAMES.length; i++) {
+				if(notes.suspects[i][0].equals(suspect)) {
+					notes.suspects[i][botNum] = "X";
+				}
+			}
+    		
+    		for(int i = 0; i < Names.WEAPON_NAMES.length; i++) {
+				if(notes.weapons[i][0].equals(weapon)) {
+					notes.weapons[i][botNum] = "X";
+				}
+			}
+    		
+    		for(int i = 0; i < Names.ROOM_CARD_NAMES.length; i++) {
+				if(notes.rooms[i][0].equals(room)) {
+					notes.rooms[i][botNum] = "X";
+				}
+			}
+    	}
+    	
+    	public void cardShown(String card, int botNum) {
+    		for(int i = 0; i < Names.SUSPECT_NAMES.length; i++) {
+    			if(suspects[i][0].toLowerCase().equals(card.toLowerCase().trim())) {
+    				for(int j = 1; j < suspects[i].length; j++) {
+    					if(j == botNum) {
+    						suspects[i][j] = "tick";
+    					}
+    					else {
+    						suspects[i][j] = "X";
+    					}
+    				}
+    			}
+    			break;
+			}
+    		
+    		for(int i = 0; i < Names.WEAPON_NAMES.length; i++) {
+    			if(weapons[i][0].toLowerCase().equals(card.toLowerCase().trim())) {
+    				for(int j = 1; j < weapons[i].length; j++) {
+    					if(j == botNum) {
+    						weapons[i][j] = "tick";
+    					}
+    					else {
+    						weapons[i][j] = "X";
+    					}
+    				}
+    			}
+    			break;
+			}
+    		
+    		for(int i = 0; i < Names.ROOM_CARD_NAMES.length; i++) {
+    			if(rooms[i][0].toLowerCase().equals(card.toLowerCase().trim())) {
+    				for(int j = 1; j < rooms[i].length; j++) {
+    					if(j == botNum) {
+    						rooms[i][j] = "tick";
+    					}
+    					else {
+    						rooms[i][j] = "X";
+    					}
+    				}
+    			}
+    			break;
+			}
+    	}
+    	
     	public String toString(){
     		StringBuffer buf = new StringBuffer();
     		
@@ -634,6 +699,11 @@ public class Bot1 implements BotAPI {
     	if(!player.getToken().isInRoom()){
     		askedQuestion = false;
     	}
+    	
+    	//TODO: Parse Log, and see who asking what
+    	
+    	
+    	
     	
     	if(moves == dice.getTotal() || player.getToken().isInRoom()){
     		moves = 0;
@@ -739,12 +809,70 @@ public class Bot1 implements BotAPI {
     }
 
     public String getCard(Cards matchingCards) {
-        // Add your code here
+    	// Show the least amount of cards
+    	if(revealedCards.isEmpty()) {
+    		revealedCards.add(matchingCards.get());
+    		return matchingCards.get().toString();
+    	}
+    	if(revealedCards.size() == 1) {
+    		for(Card c : matchingCards) {
+    			if(c.hasName(revealedCards.get(0).toString())) {
+    				return c.toString();
+    			}
+    		}
+    	}
+    	if(revealedCards.size() > 1) {
+    		for(Card c : revealedCards) {
+    			for(Card d : matchingCards) {
+    				if(c.hasName(d.toString())) {
+    					return d.toString();
+    				}
+    			}
+    		}
+    	}
         return matchingCards.get().toString();
     }
 
     public void notifyResponse(Log response) {
-        // Add your code here
+    	String suspect = null;
+    	String weapon = null;
+    	String room = null;
+    	
+    	for(String s : response) {
+    		if(s.contains("questioned")) {
+    			for(String x : Names.SUSPECT_NAMES) {
+    				if(s.contains(x)) {
+    					suspect = x;
+    					break;
+    				}
+    			}
+    			for(String y : Names.WEAPON_NAMES) {
+    				if(s.contains(y)) {
+    					weapon = y;
+    					break;
+    				}
+    			}
+    			for(String z : Names.ROOM_CARD_NAMES) {
+    				if(s.contains(z)) {
+    					room = z;
+    					break;
+    				}
+    			}
+    		}
+    	}
+    	for(String s : response) {
+    		System.out.println(s);
+    		if(s.contains("did not show any cards")) {
+    			int botNum = Integer.parseInt(s.substring(3, 4));
+    			notes.noCardShown(suspect, weapon, room, botNum);
+    		}
+    		if(s.contains("showed")) {
+    			String card = s.substring(s.lastIndexOf(" ") + 1, s.length() - 1);
+    			int botNum = Integer.parseInt(s.substring(3, 4));
+    			notes.cardShown(card, botNum);
+    			System.out.println(notes);
+    		}
+    	}
     }
     
 //    public static void main(String[] args) {
