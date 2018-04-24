@@ -40,7 +40,6 @@ public class Bot1 implements BotAPI {
     private ArrayList<Integer> cardInfoSetsNumber = new ArrayList<>(); 
     private int exitDoor;
     private boolean rolled = false;
-    private ArrayList<String> previousVisitedRooms = new ArrayList<>();
     
     private static class Graph{
     	
@@ -834,14 +833,30 @@ public class Bot1 implements BotAPI {
     	
     	parseLog();    	
     	if(!rolled) {
+    		if(player.getToken().isInRoom()){
+    			if(player.getToken().getRoom().hasPassage()){
+    				if(player.getCards().contains(player.getToken().getRoom().getPassageDestination().toString())){
+    					for(int i = 0; i < Names.ROOM_CARD_NAMES.length; i++){
+    						int count = 0;
+    						for(int j = 1; j < notes.rooms[i].length; j++){
+    							if(notes.rooms[i][0].equals(player.getToken().getRoom().getPassageDestination().toString())){
+	    							if(notes.rooms[i][j] == "X"){
+	    								count++;
+	    							}
+    							}
+    						}
+    						if(count <= 1){
+		    					rolled = true;
+		    					return "passage";
+    						}
+    					}
+    				}
+    			}
+    		}
     		rolled = true;
     		return "roll";
     	}
-    	if(player.getToken().isInRoom()) {
-    		if(!previousVisitedRooms.contains(player.getToken().getRoom().toString())) {
-    			previousVisitedRooms.add(player.getToken().getRoom().toString());
-    		}
-    	}
+
     	
     	if(moves == dice.getTotal() || player.getToken().isInRoom()){
     		moves = 0;
@@ -877,11 +892,8 @@ public class Bot1 implements BotAPI {
 		    	dest = closestRoom(pos);
 			}
 			else {
-				    		
-				ArrayList<String> leastInfo = new ArrayList<>(); // Array to hold the rooms we have the least knowledge on
-				findLeastInfo(leastInfo);
-		
-		    	dest = closestRoomWithLeastInfo(leastInfo, pos);
+				
+		    	dest = closestRoomWithLeastInfo(pos);
 		    	
 				if(player.getToken().isInRoom()) {
 					 findClosestDoorToDest(dest, player.getToken().getRoom());
@@ -925,13 +937,11 @@ public class Bot1 implements BotAPI {
 				if(player.getToken().isInRoom()) {
 					findClosestDoorToDest(dest, player.getToken().getRoom());
 				}
-				//System.out.println("No rooms left");
+				System.out.println("No rooms left");
 			}
 			
 			// Bug testing
 			if(g.minPath(pos.getCol() + 24*pos.getRow(), dest.getCol() + 24*dest.getRow()).size() < 2) {
-				System.out.println(previousVisitedRooms);
-				System.out.println(previousVisitedRooms.size());
 				System.out.println(g.getNode(pos.getCol() + 24*pos.getRow()).neighbours);
 				System.out.println(g.minPath(pos.getCol() + 24*pos.getRow(), dest.getCol() + 24*dest.getRow()));
 				System.out.println(dest);
@@ -945,9 +955,25 @@ public class Bot1 implements BotAPI {
 
 		    across = g.minPath(pos.getCol() + 24*pos.getRow(), dest.getCol() + 24*dest.getRow()).get(1).y;
 		    down = g.minPath(pos.getCol() + 24*pos.getRow(), dest.getCol() + 24*dest.getRow()).get(1).x;
+		    
+		    // Edge cases
+		    if(across == 2 && down == 10){
+		    	across = 8;
+		    	down = 12;
 		    }
+		    else if(across == 10 && down == 19){
+		    	across = 11;
+		    	down = 17;
+		    }
+		    else if(across == 20 && down == 9){
+		    	across = 22;
+		    	down = 13;
+		    }
+		    
+    	}
 
     	//System.out.println(pos + "\t" + dest + "\t" + across + "\t" + down);
+    	//System.out.println(g.minPath(pos.getCol() + 24*pos.getRow(), dest.getCol() + 24*dest.getRow()));
     	if(down > pos.getRow()){
     		moves++;
     		return "d";
@@ -982,8 +1008,11 @@ public class Bot1 implements BotAPI {
 	    			}
 	    		}
 	    	}
+	    	else{// 20% of the time ...
+	    		
+	    	}
     	}
-    	else{ // 20% of the time ...
+    	else{ 
     		for(int i = 0; i < Names.SUSPECT_NAMES.length; i++){
     	   		int count = 0;
     			for(int j = 1; j < notes.suspects[i].length; j++){
@@ -1092,17 +1121,17 @@ public class Bot1 implements BotAPI {
     		}
     	}
     	for(String s : response) {
-    		//System.out.println(s);
+    		System.out.println(s);
     		if(s.contains("did not show any cards")) {
     			int botNum = getBotNum(s.substring(0, s.indexOf(" ")));
     			notes.noCardShown(suspect, weapon, room, botNum);
     		}
     		if(s.contains("showed")) {
-    			String card = s.substring(s.lastIndexOf(" ") + 1, s.length() - 1);
+    			String card = s.substring(s.indexOf(": ") + 2, s.length() - 1);
     			int botNum = getBotNum(s.substring(0, s.indexOf(" ")));
     			//System.out.println(botNum);
     			notes.cardShown(card, botNum);
-    			//System.out.println(notes);
+    			System.out.println(notes);
     		}
     	}
     }
@@ -1125,7 +1154,7 @@ public class Bot1 implements BotAPI {
     	String room = null;
     	for(String s : log) {
     		if(counter > logLineCounter) { //this way we don't parse old information
-	    		System.out.println(s);
+	    		//System.out.println(s);
 	    		if(!s.substring(0, s.indexOf(" ")).equals(player.getName())){
 		    		if(s.contains("questioned")) {
 		    			for(String x : Names.SUSPECT_NAMES) {
@@ -1172,7 +1201,7 @@ public class Bot1 implements BotAPI {
     			counter++;
     		}
     	}
-    	System.out.println(notes);
+    	//System.out.println(notes);
     }
     
     public Coordinates closestRoom(Coordinates pos) { //From a normal tile or room
@@ -1228,60 +1257,73 @@ public class Bot1 implements BotAPI {
     	}
     }
     
-    public void findLeastInfo(ArrayList<String> leastInfo){
-    	
-		for(int i = 0; i < Names.ROOM_CARD_NAMES.length; i++) {
-			int amount = 0;
-			for(int j = 1; j < notes.rooms[i].length; j++) {
-				if(notes.rooms[i][j] != "X") {
-					amount++;
-				}
-			}
-			if(amount >= 3) { // this number can be changed
-				if(player.getToken().isInRoom()) {
-					if(notes.rooms[i][0] == player.getToken().getRoom().toString()) {
-						// Do nothing
-					}
-    				else {
-    					leastInfo.add(notes.rooms[i][0]);
-    					//System.out.println(notes.rooms[i][0]);
-    				}
-				}
-				else {
-					leastInfo.add(notes.rooms[i][0]);
-				}
-			}
-		}
-    }
+//    public void findLeastInfo(ArrayList<String> leastInfo){
+//    	
+//		for(int i = 0; i < Names.ROOM_CARD_NAMES.length; i++) {
+//			int amount = 0;
+//			for(int j = 1; j < notes.rooms[i].length; j++) {
+//				if(notes.rooms[i][j] != "X") {
+//					amount++;
+//				}
+//			}
+//			if(amount >= 3) { // this number can be changed
+//				if(player.getToken().isInRoom()) {
+//					if(notes.rooms[i][0] == player.getToken().getRoom().toString()) {
+//						// Do nothing
+//					}
+//    				else {
+//    					leastInfo.add(notes.rooms[i][0]);
+//    					//System.out.println(notes.rooms[i][0]);
+//    				}
+//				}
+//				else {
+//					leastInfo.add(notes.rooms[i][0]);
+//				}
+//			}
+//		}
+//    }
     
-    public Coordinates closestRoomWithLeastInfo(ArrayList<String> leastInfo, Coordinates pos) {
+    public Coordinates closestRoomWithLeastInfo(/*ArrayList<String> leastInfo, */Coordinates pos) {
     	int minIndex = 0;
     	int minVal = Integer.MAX_VALUE;
     	
+    	ArrayList<String> leastInfo = new ArrayList<>();
+    	int minCount = 2;
+    	for(int i = 0; i < Names.ROOM_CARD_NAMES.length; i++){
+    		int count = 0;
+    		for(int j = 1; j < notes.rooms[i].length; j++){
+    			if(notes.rooms[i][j] == "X" || notes.rooms[i][j] == "tick"){
+    				count++;
+    			}
+    		}
+    		if(count <= minCount){
+    			minCount = count;
+    			leastInfo.add(notes.rooms[i][0]);
+    		}
+    	}
+    	
     	// find the closest room with the least info
     	for(String s : leastInfo) {
-    		if(!previousVisitedRooms.contains(s)) {
-	    		if(map.getRoom(s).getNumberOfDoors() > 1) {
-	    			for(int i = 0; i < map.getRoom(s).getNumberOfDoors(); i++) {
-	    				Coordinates temp = map.getRoom(s).getDoorCoordinates(i);
-	    				bots.Bot1.Graph.Node n = g.getNode(temp.getCol() + 24*temp.getRow());
-	    	    		if(n.type == 1 && n.index != pos.getCol() + 24*pos.getRow()){
-	    	    			if(g.heuristic(g.getNode(pos.getCol() + 24*pos.getRow()), n) < minVal){
-	    	    				minVal= g.heuristic(g.getNode(pos.getCol() + 24*pos.getRow()), n);
-	    	    				minIndex = n.index;
-	    	    			}
-	    	    		}
+    		if(map.getRoom(s).getNumberOfDoors() > 1) {
+    			for(int i = 0; i < map.getRoom(s).getNumberOfDoors(); i++) {
+    				Coordinates temp = map.getRoom(s).getDoorCoordinates(i);
+    				bots.Bot1.Graph.Node n = g.getNode(temp.getCol() + 24*temp.getRow());
+    	    		if(n.type == 1 && n.index != pos.getCol() + 24*pos.getRow()){
+    	    			if(g.heuristic(g.getNode(pos.getCol() + 24*pos.getRow()), n) < minVal){
+    	    				minVal= g.heuristic(g.getNode(pos.getCol() + 24*pos.getRow()), n);
+    	    				minIndex = n.index;
+    	    			}
+    	    		}
+    			}
+    		}
+    		else { // only has 1 door
+    			Coordinates temp = map.getRoom(s).getDoorCoordinates(0);
+    			bots.Bot1.Graph.Node n = g.getNode(temp.getCol() + 24*temp.getRow());
+	    		if(n.type == 1 && n.index != pos.getCol() + 24*pos.getRow()){
+	    			if(g.heuristic(g.getNode(pos.getCol() + 24*pos.getRow()), n) < minVal){
+	    				minVal= g.heuristic(g.getNode(pos.getCol() + 24*pos.getRow()), n);
+	    				minIndex = n.index;
 	    			}
-	    		}
-	    		else { // only has 1 door
-	    			Coordinates temp = map.getRoom(s).getDoorCoordinates(0);
-	    			bots.Bot1.Graph.Node n = g.getNode(temp.getCol() + 24*temp.getRow());
-		    		if(n.type == 1 && n.index != pos.getCol() + 24*pos.getRow()){
-		    			if(g.heuristic(g.getNode(pos.getCol() + 24*pos.getRow()), n) < minVal){
-		    				minVal= g.heuristic(g.getNode(pos.getCol() + 24*pos.getRow()), n);
-		    				minIndex = n.index;
-		    			}
-		    		}
 	    		}
     		}
     	}
@@ -1302,6 +1344,7 @@ public class Bot1 implements BotAPI {
     				minVal= g.heuristic(n, g.getNode(dest.getCol() + 24*dest.getRow()));
     				minIndex = n.index;
     				exitDoor = i;
+    				System.out.println("");
     				//System.out.println("exitDoor: " + exitDoor);
     			}
 			}
