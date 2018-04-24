@@ -121,6 +121,7 @@ public class Bot1 implements BotAPI {
             {2, 2, 2, 2, 2, 2, 2, 0, 0, 2, 2, 2, 2, 2, 2, 0, 0, 2, 2, 2, 2, 2, 2, 2},
             {2, 2, 2, 2, 2, 2, 2, 0, 2, 2, 2, 2, 2, 2, 2, 2, 0, 2, 2, 2, 2, 2, 2, 2},
         };
+
         
         public Graph() {
         	// Add all nodes
@@ -225,7 +226,8 @@ public class Bot1 implements BotAPI {
         	addMutualLinks(2+24*10,6+24*15);
         	addMutualLinks(2+24*10,7+24*12);
         	// Basement
-        	addMutualLinks(12+24*14,12+24*16);        	
+        	addMutualLinks(12+24*14,12+24*16);      
+        	
         	
         }
     	
@@ -666,12 +668,12 @@ public class Bot1 implements BotAPI {
     			break;
 			}
     		
-    		System.out.println(this);
+    		//System.out.println(this);
     	}
     	
     	public void cardShown(String card, int botNum) {
     		for(int i = 0; i < Names.SUSPECT_NAMES.length; i++) {
-    			if(suspects[i][0].toLowerCase().equals(card.toLowerCase().trim())) {
+    			if(suspects[i][0].equals(card)) {
     				for(int j = 1; j < suspects[i].length; j++) {
     					if(j == botNum) {
     						suspects[i][j] = "tick";
@@ -681,11 +683,10 @@ public class Bot1 implements BotAPI {
     					}
     				}
     			}
-    			break;
 			}
     		
     		for(int i = 0; i < Names.WEAPON_NAMES.length; i++) {
-    			if(weapons[i][0].toLowerCase().equals(card.toLowerCase().trim())) {
+    			if(weapons[i][0].equals(card)) {
     				for(int j = 1; j < weapons[i].length; j++) {
     					if(j == botNum) {
     						weapons[i][j] = "tick";
@@ -695,11 +696,10 @@ public class Bot1 implements BotAPI {
     					}
     				}
     			}
-    			break;
 			}
     		
     		for(int i = 0; i < Names.ROOM_CARD_NAMES.length; i++) {
-    			if(rooms[i][0].toLowerCase().equals(card.toLowerCase().trim())) {
+    			if(rooms[i][0].equals(card)) {
     				for(int j = 1; j < rooms[i].length; j++) {
     					if(j == botNum) {
     						rooms[i][j] = "tick";
@@ -709,7 +709,6 @@ public class Bot1 implements BotAPI {
     					}
     				}
     			}
-    			break;
 			}
     		
     		// Perform Checks
@@ -728,6 +727,7 @@ public class Bot1 implements BotAPI {
     			}
     			if(xCount == playersInfo.numPlayers() && !player.getCards().contains(suspects[i][0])) { // No one has this card and we don't hold the card either
     				confirmedSuspect = suspects[i][0];
+    				System.out.println("SUSPECT FOUND");
     			}
     		}
     	}
@@ -742,6 +742,7 @@ public class Bot1 implements BotAPI {
     			}
     			if(xCount == playersInfo.numPlayers() && !player.getCards().contains(weapons[i][0])) { // No one has this card and we don't hold the card either
     				confirmedWeapon = weapons[i][0];
+    				System.out.println("WEAPON FOUND");
     			}
     		}
     	}
@@ -756,6 +757,7 @@ public class Bot1 implements BotAPI {
     			}
     			if(xCount == playersInfo.numPlayers() && !player.getCards().contains(rooms[i][0])) { // No one has this card and we don't hold the card either
     				confirmedRoom = rooms[i][0];
+    				System.out.println("ROOM FOUND");
     			}
     		}
     	}
@@ -854,6 +856,7 @@ public class Bot1 implements BotAPI {
     			return "question";
 			}
 		}
+    	askedQuestion = false;
     	rolled = false;
     	return "done";
     }
@@ -880,7 +883,7 @@ public class Bot1 implements BotAPI {
 		
 		    	dest = closestRoomWithLeastInfo(leastInfo, pos);
 		    	
-				if(player.getToken().isInRoom() && !leastInfo.isEmpty()) {
+				if(player.getToken().isInRoom()) {
 					 findClosestDoorToDest(dest, player.getToken().getRoom());
 				}
 			}
@@ -922,7 +925,7 @@ public class Bot1 implements BotAPI {
 				if(player.getToken().isInRoom()) {
 					findClosestDoorToDest(dest, player.getToken().getRoom());
 				}
-				System.out.println("No rooms left");
+				//System.out.println("No rooms left");
 			}
 			
 			// Bug testing
@@ -944,7 +947,7 @@ public class Bot1 implements BotAPI {
 		    down = g.minPath(pos.getCol() + 24*pos.getRow(), dest.getCol() + 24*dest.getRow()).get(1).x;
 		    }
 
-    	System.out.println(pos + "\t" + dest + "\t" + across + "\t" + down);
+    	//System.out.println(pos + "\t" + dest + "\t" + across + "\t" + down);
     	if(down > pos.getRow()){
     		moves++;
     		return "d";
@@ -970,7 +973,7 @@ public class Bot1 implements BotAPI {
 		if(confirmedSuspect != null){
 			return confirmedSuspect;
 		}
-    	if(questionsAsked == 1){ // On the first question ...
+    	if(questionsAsked == 0){ // On the first question ...
 	    	int chance = rand.nextInt(100) + 1;
 	    	if(chance < 80){ //80% of the time
 	    		for(Card c : player.getCards()){
@@ -982,7 +985,18 @@ public class Bot1 implements BotAPI {
     	}
     	else{ // 20% of the time ...
     		for(int i = 0; i < Names.SUSPECT_NAMES.length; i++){
-    			if(!notes.suspects[i].toString().contains("X")){ // Ask about a card we do not know anything about
+    	   		int count = 0;
+    			for(int j = 1; j < notes.suspects[i].length; j++){
+    				if(notes.suspects[i][j] == "tick"){
+    					count = 0;
+    					break; // Go next line
+    				}
+    				else if(notes.suspects[i][j] != "X"){
+    					count++;
+    				}
+    			}
+    			if(count > 1){ // This number can be tweaked
+    				System.out.println(notes.suspects[i][0]);
     				return notes.suspects[i][0];
     			}
     		}
@@ -994,8 +1008,23 @@ public class Bot1 implements BotAPI {
 		if(confirmedWeapon != null){
 			return confirmedWeapon;
 		}
-        // Add your code here
-        return Names.WEAPON_NAMES[0];
+		int count = 0;
+		for(int i = 0; i < Names.WEAPON_NAMES.length; i++){
+			for(int j = 1; j < notes.weapons[i].length; j++){
+				if(notes.weapons[i][j] == "tick"){
+					break; // Go next line
+				}
+				else if(notes.weapons[i][j] != "X"){
+					count++;
+				}
+			}
+			if(count > 1){ // This number can be tweaked
+				System.out.println(notes.weapons[i][0]);
+				return notes.weapons[i][0];
+			}
+		}
+	
+	return Names.WEAPON_NAMES[rand.nextInt(Names.WEAPON_NAMES.length - 1)]; // if none of the above apply, we give back a random name
     }
 
     public String getRoom() {
@@ -1043,7 +1072,7 @@ public class Bot1 implements BotAPI {
     	for(String s : response) {
     		if(s.contains("questioned")) {
     			for(String x : Names.SUSPECT_NAMES) {
-    				if(s.contains(x)) {
+    				if(s.substring(s.lastIndexOf(")")).contains(x)) {
     					suspect = x;
     					break;
     				}
@@ -1096,41 +1125,45 @@ public class Bot1 implements BotAPI {
     	String room = null;
     	for(String s : log) {
     		if(counter > logLineCounter) { //this way we don't parse old information
-	    		//System.out.println(s);
-	    		if(s.contains("questioned")) {
-	    			for(String x : Names.SUSPECT_NAMES) {
-	    				if(s.substring(s.lastIndexOf(")")).contains(x)) {
-	    					suspect = x;
-	    					break;
-	    				}
-	    			}
-	    			for(String y : Names.WEAPON_NAMES) {
-	    				if(s.contains(y)) {
-	    					weapon = y;
-	    					break;
-	    				}
-	    			}
-	    			for(String z : Names.ROOM_CARD_NAMES) {
-	    				if(s.contains(z)) {
-	    					room = z;
-	    					break;
-	    				}
-	    			}
+	    		System.out.println(s);
+	    		if(!s.substring(0, s.indexOf(" ")).equals(player.getName())){
+		    		if(s.contains("questioned")) {
+		    			for(String x : Names.SUSPECT_NAMES) {
+		    				if(s.substring(s.lastIndexOf(")")).contains(x)) {
+		    					suspect = x;
+		    					break;
+		    				}
+		    			}
+		    			for(String y : Names.WEAPON_NAMES) {
+		    				if(s.contains(y)) {
+		    					weapon = y;
+		    					break;
+		    				}
+		    			}
+		    			for(String z : Names.ROOM_CARD_NAMES) {
+		    				if(s.contains(z)) {
+		    					room = z;
+		    					break;
+		    				}
+		    			}
+		    		}
 	    		}
-	    		if(s.contains("did not show any cards") && s.substring(0, s.indexOf(" ")).equals(player.getName())) {
-	    			int botNum = getBotNum(s.substring(0, s.indexOf(" ")));
-	    			notes.noCardShown(suspect, weapon, room, botNum);
-	    		}
-	    		if(s.contains("showed")) {
-	    			int botNum = getBotNum(s.substring(0, s.indexOf(" ")));
-	    			cardInfoSetsNumber.add(botNum);
-	    			int count = 0;
-	    			for(int x : cardInfoSetsNumber) {
-	    				if(botNum == x) {
-	    					count++;
-	    				}
-	    			}
-	    			notes.unknownCardShown(suspect, weapon, room, botNum, count);
+	    		if(suspect != null && weapon != null && room != null){
+		    		if(s.contains("did not show any cards") && s.substring(0, s.indexOf(" ")).equals(player.getName())) {
+		    			int botNum = getBotNum(s.substring(0, s.indexOf(" ")));
+		    			notes.noCardShown(suspect, weapon, room, botNum);
+		    		}
+		    		if(s.contains("showed")) {
+		    			int botNum = getBotNum(s.substring(0, s.indexOf(" ")));
+		    			cardInfoSetsNumber.add(botNum);
+		    			int count = 0;
+		    			for(int x : cardInfoSetsNumber) {
+		    				if(botNum == x) {
+		    					count++;
+		    				}
+		    			}
+		    			notes.unknownCardShown(suspect, weapon, room, botNum, count);
+		    		}
 	    		}
 	    		counter++;
 	    		logLineCounter++;
@@ -1139,18 +1172,20 @@ public class Bot1 implements BotAPI {
     			counter++;
     		}
     	}
+    	System.out.println(notes);
     }
     
     public Coordinates closestRoom(Coordinates pos) { //From a normal tile or room
     	int minIndex = 0;
     	int minVal = Integer.MAX_VALUE;
     	for(bots.Bot1.Graph.Node n : g.nodes){
-    		if(n.type == 1 && n.index != pos.getCol() + 24*pos.getRow()){
+    		if(n.type == 1 && n.index != (pos.getCol() + 24*pos.getRow())){
     			if(player.getToken().isInRoom()) {
     				ArrayList<Integer> doorCoords = new ArrayList<>();
     				for(int i = 0; i < player.getToken().getRoom().getNumberOfDoors(); i++) {
     					doorCoords.add(player.getToken().getRoom().getDoorCoordinates(i).getCol() + player.getToken().getRoom().getDoorCoordinates(i).getRow()*24);
     				}
+    				
     				if(!doorCoords.contains(n.index)) {
     					if(g.heuristic(g.getNode(pos.getCol() + 24*pos.getRow()), n) < minVal){
     						minVal= g.heuristic(g.getNode(pos.getCol() + 24*pos.getRow()), n);
@@ -1257,6 +1292,7 @@ public class Bot1 implements BotAPI {
     public void findClosestDoorToDest(Coordinates dest, Room currentRoom) {
     	int minIndex = 0;
     	int minVal = Integer.MAX_VALUE;
+    	exitDoor = 0;
 		if(currentRoom.getNumberOfDoors() > 1) {
 			for(int i = 0; i < currentRoom.getNumberOfDoors(); i++) {
 				Coordinates temp = currentRoom.getDoorCoordinates(i);
@@ -1266,11 +1302,13 @@ public class Bot1 implements BotAPI {
     				minVal= g.heuristic(n, g.getNode(dest.getCol() + 24*dest.getRow()));
     				minIndex = n.index;
     				exitDoor = i;
+    				//System.out.println("exitDoor: " + exitDoor);
     			}
 			}
 		}
 		else {
 			exitDoor = 0;
+			//System.out.println("exitDoor: " + exitDoor);
 		}
     }
     
