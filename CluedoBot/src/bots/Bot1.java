@@ -925,6 +925,10 @@ public class Bot1 implements BotAPI {
 		
     	if(confirmedSuspect != null && confirmedWeapon != null && confirmedRoom != null) {
     		shortestRouteToRoom(across, down, pos, map.getRoom("Cellar"));
+    		dest = new Coordinates(map.getRoom("Cellar").getDoorCoordinates(0).getCol(), map.getRoom("Cellar").getDoorCoordinates(0).getRow());
+    		
+	        across = g.minPath(pos.getCol() + 24*pos.getRow(), dest.getCol() + 24*dest.getRow()).get(1).y;
+	        down = g.minPath(pos.getCol() + 24*pos.getRow(), dest.getCol() + 24*dest.getRow()).get(1).x;
     	}
     	else {
 			// Nearest room
