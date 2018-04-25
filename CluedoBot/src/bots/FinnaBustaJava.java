@@ -11,7 +11,7 @@ import java.util.Arrays;
 import gameengine.*;
 
 @SuppressWarnings("unused")
-public class Bot1 implements BotAPI {
+public class FinnaBustaJava implements BotAPI {
 
     // The public API of Bot must not change
     // This is ONLY class that you can edit in the program
@@ -41,9 +41,9 @@ public class Bot1 implements BotAPI {
     private int exitDoor;
     private boolean rolled = false;
     
-    private static class Graph{
+    private class Graph{
     	
-    	public static class Node{
+    	public class Node{
     		
     		int index;
     		int x;
@@ -93,7 +93,7 @@ public class Bot1 implements BotAPI {
     	}
 
     	
-    	private static int [][] tileType = new int[][] { // where 0 is a regular tile, 1 is a door tile, 2 are tiles which are not movable to, 3 are trap doors
+    	private int [][] tileType = new int[][] { // where 0 is a regular tile, 1 is a door tile, 2 are tiles which are not movable to, 3 are trap doors
             {2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 2, 2, 2, 2, 0, 2, 2, 2, 2, 2, 2, 2, 2, 2},
             {2, 2, 2, 2, 2, 3, 2, 0, 0, 0, 2, 2, 2, 2, 0, 0, 0, 2, 2, 5, 2, 2, 2, 2},
             {2, 5, 2, 2, 2, 2, 0, 0, 2, 2, 2, 2, 2, 2, 2, 2, 0, 0, 2, 2, 2, 2, 2, 2},
@@ -126,11 +126,11 @@ public class Bot1 implements BotAPI {
         	// Add all nodes
         	for(int i = 0; i < tileType.length; i++) {
         		for(int j = 0; j < tileType[0].length; j++) {
-        			addNode(new bots.Bot1.Graph.Node(i, j, tileType[i][j]));
+        			addNode(new bots.FinnaBustaJava.Graph.Node(i, j, tileType[i][j]));
         		}
         	}
         	// Add links to corridor tiles
-        	for(bots.Bot1.Graph.Node curr : nodes) {
+        	for(bots.FinnaBustaJava.Graph.Node curr : nodes) {
         		if(curr.index-24 > 0 && curr.type == 0) {	// up
         			if(nodes.get(curr.index-24).type==0) {
         				curr.addNeighbour(nodes.get(curr.index-24));
@@ -373,10 +373,7 @@ public class Bot1 implements BotAPI {
     				if(!openSet.contains(n)) openSet.add(n);
     				
     				int distScore = gScore[curr.index] + length(curr,n);
-    				//if(length(curr,n) == 4) System.out.println("[" + curr + "," + curr.type + "] <--> [" + n + "," + n.type + "]"); 
     				if(distScore >= gScore[n.index]) continue;
-    				
-    				//System.out.println(curr + " --> " + n);
     				
     				cameFrom[n.index] = curr;
     				gScore[n.index] = distScore;
@@ -556,7 +553,6 @@ public class Bot1 implements BotAPI {
     		}
     		else if(Names.isRoomCard(name)){
     			for(int i = 0; i < Names.ROOM_CARD_NAMES.length; i++){
-    				//System.out.println(rooms[i][0].toLowerCase() + "\t" + name.toLowerCase().trim());
     				if(rooms[i][0].toLowerCase().equals(name.toLowerCase().trim())){
     					for(int j = 1; j < rooms[i].length; j++){
     						rooms[i][j] = mark;
@@ -593,7 +589,7 @@ public class Bot1 implements BotAPI {
     	
     	public void unknownCardShown(String suspect, String weapon, String room, int botNum, int mark) {
     		
-    		String strMark = String.valueOf(mark);
+    		String strMark = "";
     		
     		for(int i = 0; i < Names.SUSPECT_NAMES.length; i++) {
     			if(suspects[i][0].toLowerCase().equals(suspect.toLowerCase().trim())) {
@@ -666,8 +662,6 @@ public class Bot1 implements BotAPI {
     			}
     			break;
 			}
-    		
-    		//System.out.println(this);
     	}
     	
     	public void cardShown(String card, int botNum) {
@@ -736,8 +730,6 @@ public class Bot1 implements BotAPI {
     					}
     					else {
     						confirmedSuspect = suspects[k][0];
-    						System.out.println("SUSPECT FOUND");
-    						System.out.println(confirmedSuspect);
     					}
     				}
     			}
@@ -765,8 +757,6 @@ public class Bot1 implements BotAPI {
     					}
     					else {
     						confirmedWeapon = weapons[k][0];
-    						System.out.println("WEAPON FOUND");
-    						System.out.println(confirmedWeapon);
     					}
     				}
     			}
@@ -793,8 +783,6 @@ public class Bot1 implements BotAPI {
     					}
     					else {
     						confirmedRoom = rooms[k][0];
-    						System.out.println("ROOM FOUND");
-    						System.out.println(confirmedRoom);
     					}
     				}
     			}
@@ -849,7 +837,7 @@ public class Bot1 implements BotAPI {
     	
     }
     
-    public Bot1 (Player player, PlayersInfo playersInfo, Map map, Dice dice, Log log, Deck deck) {
+    public FinnaBustaJava (Player player, PlayersInfo playersInfo, Map map, Dice dice, Log log, Deck deck) {
         this.player = player;
         this.playersInfo = playersInfo;
         this.map = map;
@@ -860,7 +848,7 @@ public class Bot1 implements BotAPI {
     }
 
     public String getName() {
-        return "Bot1"; // must match the class name
+        return "FinnaBustaJava"; // must match the class name
     }
 
     public String getCommand() {
@@ -981,20 +969,13 @@ public class Bot1 implements BotAPI {
 				if(player.getToken().isInRoom()) {
 					findClosestDoorToDest(dest, player.getToken().getRoom());
 				}
-				System.out.println("No rooms left");
 			}
 			
 			// Bug testing
 			if(g.minPath(pos.getCol() + 24*pos.getRow(), dest.getCol() + 24*dest.getRow()).size() < 2) {
-				System.out.println(g.getNode(pos.getCol() + 24*pos.getRow()).neighbours);
-				System.out.println(g.minPath(pos.getCol() + 24*pos.getRow(), dest.getCol() + 24*dest.getRow()));
-				System.out.println(dest);
 				for(Card c : player.getCards()) {
 					System.out.println(c.toString());
 				}
-				System.out.println("");
-				System.out.println("");
-				System.exit(-1);
 			}
 
 		    across = g.minPath(pos.getCol() + 24*pos.getRow(), dest.getCol() + 24*dest.getRow()).get(1).y;
@@ -1016,8 +997,6 @@ public class Bot1 implements BotAPI {
 		    
     	}
 
-    	//System.out.println(pos + "\t" + dest + "\t" + across + "\t" + down);
-    	//System.out.println(g.minPath(pos.getCol() + 24*pos.getRow(), dest.getCol() + 24*dest.getRow()));
     	if(player.getToken().getPosition().equals(new Coordinates(8,5))) { // prevent player getting stuck in doors
     		moves++;
     		return "l";
@@ -1137,7 +1116,6 @@ public class Bot1 implements BotAPI {
     				}
     			}
     			if(count > 1){ // This number can be tweaked
-    				System.out.println(notes.suspects[i][0]);
     				return notes.suspects[i][0];
     			}
     		}
@@ -1160,7 +1138,6 @@ public class Bot1 implements BotAPI {
 				}
 			}
 			if(count > 1){ // This number can be tweaked
-				System.out.println(notes.weapons[i][0]);
 				return notes.weapons[i][0];
 			}
 		}
@@ -1233,7 +1210,6 @@ public class Bot1 implements BotAPI {
     		}
     	}
     	for(String s : response) {
-    		System.out.println(s);
     		if(s.contains("did not show any cards")) {
     			int botNum = getBotNum(s.substring(0, s.indexOf(" ")));
     			notes.noCardShown(suspect, weapon, room, botNum);
@@ -1241,9 +1217,7 @@ public class Bot1 implements BotAPI {
     		if(s.contains("showed")) {
     			String card = s.substring(s.indexOf(": ") + 2, s.length() - 1);
     			int botNum = getBotNum(s.substring(0, s.indexOf(" ")));
-    			//System.out.println(botNum);
     			notes.cardShown(card, botNum);
-    			System.out.println(notes);
     		}
     	}
     }
@@ -1266,7 +1240,6 @@ public class Bot1 implements BotAPI {
     	String room = null;
     	for(String s : log) {
     		if(counter > logLineCounter) { //this way we don't parse old information
-	    		//System.out.println(s);
 	    		if(!s.substring(0, s.indexOf(" ")).equals(player.getName())){
 		    		if(s.contains("questioned")) {
 		    			for(String x : Names.SUSPECT_NAMES) {
@@ -1313,13 +1286,12 @@ public class Bot1 implements BotAPI {
     			counter++;
     		}
     	}
-    	//System.out.println(notes);
     }
     
     public Coordinates closestRoom(Coordinates pos) { //From a normal tile or room
     	int minIndex = 0;
     	int minVal = Integer.MAX_VALUE;
-    	for(bots.Bot1.Graph.Node n : g.nodes){
+    	for(bots.FinnaBustaJava.Graph.Node n : g.nodes){
     		if(n.type == 1 && n.index != (pos.getCol() + 24*pos.getRow())){
     			if(player.getToken().isInRoom()) {
     				ArrayList<Integer> doorCoords = new ArrayList<>();
@@ -1356,7 +1328,7 @@ public class Bot1 implements BotAPI {
     	else {
 	    	temp = room.getDoorCoordinates(0);
 	    	
-	    	bots.Bot1.Graph.Node n = g.getNode(temp.getCol() + 24*temp.getRow());
+	    	bots.FinnaBustaJava.Graph.Node n = g.getNode(temp.getCol() + 24*temp.getRow());
 			if(g.heuristic(g.getNode(pos.getCol() + 24*pos.getRow()), n) < minVal){
 				minVal= g.heuristic(g.getNode(pos.getCol() + 24*pos.getRow()), n);
 				minIndex = n.index;
@@ -1368,33 +1340,7 @@ public class Bot1 implements BotAPI {
 	        down = g.minPath(pos.getCol() + 24*pos.getRow(), dest.getCol() + 24*dest.getRow()).get(1).x;
     	}
     }
-    
-//    public void findLeastInfo(ArrayList<String> leastInfo){
-//    	
-//		for(int i = 0; i < Names.ROOM_CARD_NAMES.length; i++) {
-//			int amount = 0;
-//			for(int j = 1; j < notes.rooms[i].length; j++) {
-//				if(notes.rooms[i][j] != "X") {
-//					amount++;
-//				}
-//			}
-//			if(amount >= 3) { // this number can be changed
-//				if(player.getToken().isInRoom()) {
-//					if(notes.rooms[i][0] == player.getToken().getRoom().toString()) {
-//						// Do nothing
-//					}
-//    				else {
-//    					leastInfo.add(notes.rooms[i][0]);
-//    					//System.out.println(notes.rooms[i][0]);
-//    				}
-//				}
-//				else {
-//					leastInfo.add(notes.rooms[i][0]);
-//				}
-//			}
-//		}
-//    }
-    
+  
     public Coordinates closestRoomWithLeastInfo(/*ArrayList<String> leastInfo, */Coordinates pos) {
     	int minIndex = 0;
     	int minVal = Integer.MAX_VALUE;
@@ -1419,7 +1365,7 @@ public class Bot1 implements BotAPI {
     		if(map.getRoom(s).getNumberOfDoors() > 1) {
     			for(int i = 0; i < map.getRoom(s).getNumberOfDoors(); i++) {
     				Coordinates temp = map.getRoom(s).getDoorCoordinates(i);
-    				bots.Bot1.Graph.Node n = g.getNode(temp.getCol() + 24*temp.getRow());
+    				bots.FinnaBustaJava.Graph.Node n = g.getNode(temp.getCol() + 24*temp.getRow());
     	    		if(n.type == 1 && n.index != pos.getCol() + 24*pos.getRow()){
     	    			if(g.heuristic(g.getNode(pos.getCol() + 24*pos.getRow()), n) < minVal){
     	    				minVal= g.heuristic(g.getNode(pos.getCol() + 24*pos.getRow()), n);
@@ -1430,7 +1376,7 @@ public class Bot1 implements BotAPI {
     		}
     		else { // only has 1 door
     			Coordinates temp = map.getRoom(s).getDoorCoordinates(0);
-    			bots.Bot1.Graph.Node n = g.getNode(temp.getCol() + 24*temp.getRow());
+    			bots.FinnaBustaJava.Graph.Node n = g.getNode(temp.getCol() + 24*temp.getRow());
 	    		if(n.type == 1 && n.index != pos.getCol() + 24*pos.getRow()){
 	    			if(g.heuristic(g.getNode(pos.getCol() + 24*pos.getRow()), n) < minVal){
 	    				minVal= g.heuristic(g.getNode(pos.getCol() + 24*pos.getRow()), n);
@@ -1450,40 +1396,18 @@ public class Bot1 implements BotAPI {
 		if(currentRoom.getNumberOfDoors() > 1) {
 			for(int i = 0; i < currentRoom.getNumberOfDoors(); i++) {
 				Coordinates temp = currentRoom.getDoorCoordinates(i);
-				bots.Bot1.Graph.Node n = g.getNode(temp.getCol() + 24*temp.getRow());
+				bots.FinnaBustaJava.Graph.Node n = g.getNode(temp.getCol() + 24*temp.getRow());
 				
 				if(g.heuristic(n, g.getNode(dest.getCol() + 24*dest.getRow())) < minVal){
     				minVal= g.heuristic(n, g.getNode(dest.getCol() + 24*dest.getRow()));
     				minIndex = n.index;
     				exitDoor = i;
-    				System.out.println("");
-    				//System.out.println("exitDoor: " + exitDoor);
     			}
 			}
 		}
 		else {
 			exitDoor = 0;
-			//System.out.println("exitDoor: " + exitDoor);
 		}
     }
-    
-    //    public static void main(String[] args) {
-//    	Graph g = new Graph();
-////    	for(bots.Bot1.Graph.Node curr : g.minPath(4+24*7,17+24*20)) {
-////    		System.out.print(curr.index + "\t");
-////    	}
-////    	System.out.print("\n"+g.toStringPath(g.minPath(4+24*7,17+24*20))+"\n");
-//    	
-//    	ArrayList<bots.Bot1.Graph.Node> temp = new ArrayList<>();
-//    	temp = g.minPath(0 + 24*7, 7 + 24*9);
-////    	System.out.println(g.toStringPath(g.minPath(0 + 24*7, 7 + 24*9)));
-//    	
-////    	for(bots.Bot1.Graph.Node x : temp){
-////    		System.out.println(x.index%24 + ", " + x.index/24);
-////    	}
-//    	for(bots.Bot1.Graph.Node x : temp){
-//    		System.out.println(x.y + ", " + x.x);
-//    	}
-//    }
 
 }
