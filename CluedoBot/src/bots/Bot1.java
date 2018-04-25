@@ -717,46 +717,86 @@ public class Bot1 implements BotAPI {
     	}
     	
     	void checkForConfirmedSuspect() {
+    		int rowsFullyKnown = 0;
     		for(int i = 0; i < Names.SUSPECT_NAMES.length; i++) {
-    			int xCount = 0; // count the amount of X's in a row
+    			int cardsKnownInRow = 0;
     			for(int j = 1; j < suspects[i].length; j++) {
-    				if(suspects[i][j] == "X") {
-    					xCount++;
+    				if(suspects[i][j] != null) {
+    					if (suspects[i][j].equals("X") || suspects[i][j].equals("tick")) {
+    				}
+    					cardsKnownInRow++;
+    					if(cardsKnownInRow == 3)
+    						rowsFullyKnown++;
     				}
     			}
-    			if(xCount == playersInfo.numPlayers() && !player.getCards().contains(suspects[i][0])) { // No one has this card and we don't hold the card either
-    				confirmedSuspect = suspects[i][0];
-    				System.out.println("SUSPECT FOUND");
+    			if(rowsFullyKnown == 5) {
+    				for(int k = 0; k < Names.SUSPECT_NAMES.length; k++) {
+    					if(suspects[k][1] != null && suspects[k][2] != null && suspects[k][3] != null) {
+    						// do nothing
+    					}
+    					else {
+    						confirmedSuspect = suspects[k][0];
+    						System.out.println("SUSPECT FOUND");
+    						System.out.println(confirmedSuspect);
+    					}
+    				}
     			}
     		}
     	}
+
     	
     	void checkForConfirmedWeapon() {
+    		int rowsFullyKnown = 0;
     		for(int i = 0; i < Names.WEAPON_NAMES.length; i++) {
-    			int xCount = 0; // count the amount of X's in a row
+    			int cardsKnownInRow = 0;
     			for(int j = 1; j < weapons[i].length; j++) {
-    				if(weapons[i][j] == "X") {
-    					xCount++;
+    				if(weapons[i][j] != null) {
+    					if (weapons[i][j].equals("X") || weapons[i][j].equals("tick")) {
+    				}
+    					cardsKnownInRow++;
+    					if(cardsKnownInRow == 3)
+    						rowsFullyKnown++;
     				}
     			}
-    			if(xCount == playersInfo.numPlayers() && !player.getCards().contains(weapons[i][0])) { // No one has this card and we don't hold the card either
-    				confirmedWeapon = weapons[i][0];
-    				System.out.println("WEAPON FOUND");
+    			if(rowsFullyKnown == 5) {
+    				for(int k = 0; k < Names.WEAPON_NAMES.length; k++) {
+    					if(weapons[k][1] != null && weapons[k][2] != null && weapons[k][3] != null) {
+    						// do nothing
+    					}
+    					else {
+    						confirmedWeapon = weapons[k][0];
+    						System.out.println("WEAPON FOUND");
+    						System.out.println(confirmedWeapon);
+    					}
+    				}
     			}
     		}
     	}
     	
     	void checkForConfirmedRoom() {
-    		for(int i = 0; i < Names.ROOM_CARD_NAMES.length; i++) {
-    			int xCount = 0; // count the amount of X's in a row
+    		int rowsFullyKnown = 0;
+    		for(int i = 0; i < Names.ROOM_NAMES.length - 1; i++) {
+    			int cardsKnownInRow = 0;
     			for(int j = 1; j < rooms[i].length; j++) {
-    				if(rooms[i][j] == "X") {
-    					xCount++;
+    				if(rooms[i][j] != null) {
+    					if (rooms[i][j].equals("X") || rooms[i][j].equals("tick")) {
+    				}
+    					cardsKnownInRow++;
+    					if(cardsKnownInRow == 3)
+    						rowsFullyKnown++;
     				}
     			}
-    			if(xCount == playersInfo.numPlayers() && !player.getCards().contains(rooms[i][0])) { // No one has this card and we don't hold the card either
-    				confirmedRoom = rooms[i][0];
-    				System.out.println("ROOM FOUND");
+    			if(rowsFullyKnown == 8) {
+    				for(int k = 0; k < Names.ROOM_NAMES.length - 1; k++) {
+    					if(rooms[k][1] != null && rooms[k][2] != null && rooms[k][3] != null) {
+    						// do nothing
+    					}
+    					else {
+    						confirmedRoom = rooms[k][0];
+    						System.out.println("ROOM FOUND");
+    						System.out.println(confirmedRoom);
+    					}
+    				}
     			}
     		}
     	}
@@ -824,7 +864,7 @@ public class Bot1 implements BotAPI {
     }
 
     public String getCommand() {
-    	if(markCards){ // Mark cards on notes
+    		if(markCards){ // Mark cards on notes
     		markCards = false;
 	    	for(Card x : player.getCards()){
 	    		notes.add("X", x.toString());
@@ -974,7 +1014,75 @@ public class Bot1 implements BotAPI {
 
     	//System.out.println(pos + "\t" + dest + "\t" + across + "\t" + down);
     	//System.out.println(g.minPath(pos.getCol() + 24*pos.getRow(), dest.getCol() + 24*dest.getRow()));
-    	if(down > pos.getRow()){
+    	if(player.getToken().getPosition().equals(new Coordinates(8,5))) { // prevent player getting stuck in doors
+    		moves++;
+    		return "l";
+    	}
+    	else if(player.getToken().getPosition().equals(new Coordinates(7,12))) {
+    		moves++;
+    		return "r";    		
+    	}
+    	else if(player.getToken().getPosition().equals(new Coordinates(18,9))) {
+    		moves++;
+    		return "l";    		
+    	}
+    	else if(player.getToken().getPosition().equals(new Coordinates(6,19))) {
+    		moves++;
+    		return "u";    		
+    	}
+    	else if(player.getToken().getPosition().equals(new Coordinates(17,16))) {
+    		moves++;
+    		return "l";    		
+    	}
+    	else if(player.getToken().getPosition().equals(new Coordinates(20,14))) {
+    		moves++;
+    		return "u";    		
+    	}
+    	else if(player.getToken().getPosition().equals(new Coordinates(22,12))) {
+    		moves++;
+    		return "d";    		
+    	}
+    	else if(player.getToken().getPosition().equals(new Coordinates(4,6))) {
+    		moves++;
+    		return "d";    		
+    	}
+    	else if(player.getToken().getPosition().equals(new Coordinates(9,7))) {
+    		moves++;
+    		return "d";    		
+    	}
+    	else if(player.getToken().getPosition().equals(new Coordinates(14,7))) {
+    		moves++;
+    		return "d";    		
+    	}
+    	else if(player.getToken().getPosition().equals(new Coordinates(15,5))) {
+    		moves++;
+    		return "r";    		
+    	}
+    	else if(player.getToken().getPosition().equals(new Coordinates(18,4))) {
+    		moves++;
+    		return "d";    		
+    	}
+    	else if(player.getToken().getPosition().equals(new Coordinates(6,15))) {
+    		moves++;
+    		return "d";    		
+    	}
+    	else if(player.getToken().getPosition().equals(new Coordinates(11,18))) {
+    		moves++;
+    		return "u";    		
+    	}
+    	else if(player.getToken().getPosition().equals(new Coordinates(12,18))) {
+    		moves++;
+    		return "u";    		
+    	}
+    	else if(player.getToken().getPosition().equals(new Coordinates(14,20))) {
+    		moves++;
+    		return "r";    		
+    	}
+    	else if(player.getToken().getPosition().equals(new Coordinates(17,21))) {
+    		moves++;
+    		return "u";    		
+    	}
+    	else if(down > pos.getRow()){
     		moves++;
     		return "d";
     	}
